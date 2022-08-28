@@ -8,7 +8,6 @@
     Flores Principe Alejandro Hernan, 79059, [1K15] """
 
 from registro import *
-import string
 import random
 
 
@@ -30,7 +29,7 @@ def mostrar_menu():
 def cargar_proyectos(vec, n):
     for i in range(n):
         # el numero debe aparecer UNA SOLA vez
-        numero = random.randrange(1, 100)
+        numero = random.randrange(1000000, 9999999)
         fecha = "20-02-2011"
         titulo = random.choice(["AR", "BR", "CH", "PR", "PE", "CO", "UR"])
         lenguaje = random.randint(0, 10)
@@ -39,6 +38,9 @@ def cargar_proyectos(vec, n):
         vec.append(proyecto)
 
 
+def obtener_ultimo_num():
+    pass
+
 # Número de proyecto
 # Título
 # Fecha de actualización con el formato dd-mm-yyyy validando que el año esté entre 2000 y 2022
@@ -46,7 +48,7 @@ def cargar_proyectos(vec, n):
 # Cantidad de líneas de código
 
 
-def ordenar_proyecto(vec):
+def ordenar_x_titulo(vec):
     n = len(vec)
     for i in range(0, n - 1):
         for j in range(i + 1, n):
@@ -84,8 +86,17 @@ def mostrar_cant_lineas(v_acum_lineas):
         print("El lenguaje", convertir_titulo(i), " acumula ", v_acum_lineas[i], "lineas.")
 
 
-def filtrar_lenguaje(vec, ln):
-    pass
+def ordenar_x_numero(vec):
+    for i in range(len(vec) - 1):
+        for j in range(i + 1, len(vec)):
+            if vec[i].numero > vec[j].numero:
+                vec[i], vec[j] = vec[j], vec[i]
+
+
+def mostrar_x_lenguaje(vec, ln):
+    for i in vec:
+        if i.lenguaje == ln:
+            print(i)
 
 
 def principal():
@@ -102,7 +113,7 @@ def principal():
         elif 2 <= op <= 7:
             if len(vec) != 0:
                 if op == 2:
-                    ordenar_proyecto(vec)
+                    ordenar_x_titulo(vec)
                     mostrar_proyecto(vec)
                 elif op == 3:
                     x = int(input('ACTUALIZAR: Ingrese el numero del proyecto:'))
@@ -122,8 +133,9 @@ def principal():
                 elif op == 6:
                     for i in range(11):
                         print(i, ":", convertir_titulo(i))
-                    ln = input("Que lenguaje desea filtrar? ")
-                    filtrar_lenguaje(vec, ln)
+                    ln = int(input("Que lenguaje desea filtrar? "))
+                    ordenar_x_numero(vec)
+                    mostrar_x_lenguaje(vec, ln)
                 elif op == 7:
                     pass
             else:
