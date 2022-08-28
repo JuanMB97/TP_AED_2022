@@ -68,7 +68,23 @@ def busqueda_secuencial(vec, x):
     return res
 
 
-def actualizar_proyecto(vec, indice):
+def actualizar_proyecto(vec, indice, lineas, fecha):
+    pass
+
+
+def calcular_cantidad_lineas(vec):
+    v = [] * 11
+    for i in vec:
+        v[i.lenguaje] += 1
+    return v
+
+
+def mostrar_cant_lineas(v_acum_lineas):
+    for i in range(len(v_acum_lineas)):
+        print("El lenguaje", convertir_titulo(i), " acumula ", v_acum_lineas[i], "lineas.")
+
+
+def filtrar_lenguaje(vec, ln):
     pass
 
 
@@ -92,15 +108,22 @@ def principal():
                     x = int(input('ACTUALIZAR: Ingrese el numero del proyecto:'))
                     indice = busqueda_secuencial(vec, x)
                     if indice is not None:
-                        actualizar_proyecto(vec, indice)
+                        print("Proyecto encontrado!!!")
+                        lineas = input("Cantidad de lineas: ")
+                        fecha = input("Fecha de actualizacion: ")
+                        actualizar_proyecto(vec, indice, lineas, fecha)
                     else:
                         print('El numero de proyecto no se encuentra')
                 elif op == 4:
-                    pass
+                    v_acum_lineas = calcular_cantidad_lineas(vec)
+                    mostrar_cant_lineas(v_acum_lineas)
                 elif op == 5:
                     pass
                 elif op == 6:
-                    pass
+                    for i in range(11):
+                        print(i, ":", convertir_titulo(i))
+                    ln = input("Que lenguaje desea filtrar? ")
+                    filtrar_lenguaje(vec, ln)
                 elif op == 7:
                     pass
             else:
