@@ -12,11 +12,11 @@ class Proyecto:
         self.cant_lineas = cant_lineas
 
     def __str__(self):
-        res = "Número: " + str(self.numero)
-        res += "- Fecha: " + self.fecha
-        res += "- Titulo: " + self.titulo
-        res += "- Lenguaje: " + convertir_titulo(self.lenguaje)
-        res += "- Cantidad de lineas: " + str(self.cant_lineas)
+        res = "{:<20}".format("Número: " + str(self.numero))
+        res += "{:<23}".format(" - Fecha: " + self.fecha)
+        res += "{:<25}".format(" - Titulo: " + self.titulo)
+        res += "{:<25}".format(" - Lenguaje: " + convertir_titulo(self.lenguaje))
+        res += " - Cantidad de lineas: " + str(self.cant_lineas)
         return res
 
 

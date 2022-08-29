@@ -26,26 +26,43 @@ def mostrar_menu():
     print("\n==================================================================================")
 
 
+def esta_numero(vec, n):
+    esta = False
+    for i in vec:
+        if i.numero == n:
+            esta = True
+            print("el numero ", n, "ya esta en la lista")
+            break
+    return esta
+
+
+def crear_proyecto_random():
+    numero = random.randint(1, 9999999)
+    dia = str(random.randint(1, 31))
+    mes = str(random.randint(1, 12))
+    anio = str(random.randint(2000, 2022))
+    fecha = dia + "-" + mes + "-" + anio
+    titulo = random.choice(["AR", "BR", "CH", "PR", "PE", "CO", "UR"])
+    lenguaje = random.randint(0, 10)
+    cant_lineas = random.randint(500, 800)
+    return Proyecto(numero, fecha, titulo, lenguaje, cant_lineas)
+
+
+def crear_proyecto_manual():
+    numero = int(input("Ingrese el numero del proyecto: "))
+    fecha = input("Ingrese la fecha de creacion con el formato dd-mm-yyyy: ")
+    titulo = input("Ingrese el nombre del proyecto: ")
+    lenguaje = int(input("Ingrese el valor que corresponda: "))
+    cant_lineas = int(input("Ingrese la cantidad de lineas del proyecto: "))
+    return Proyecto(numero, fecha, titulo, lenguaje, cant_lineas)
+
+
 def cargar_proyectos(vec, n):
     for i in range(n):
-        # el numero debe aparecer UNA SOLA vez
-        numero = random.randrange(1000000, 9999999)
-        fecha = "20-02-2011"
-        titulo = random.choice(["AR", "BR", "CH", "PR", "PE", "CO", "UR"])
-        lenguaje = random.randint(0, 10)
-        cant_lineas = random.randint(500, 800)
-        proyecto = Proyecto(numero, fecha, titulo, lenguaje, cant_lineas)
+        proyecto = crear_proyecto_random()
+        while esta_numero(vec, proyecto.numero):
+            proyecto = crear_proyecto_random()
         vec.append(proyecto)
-
-
-def obtener_ultimo_num():
-    pass
-
-# Número de proyecto
-# Título
-# Fecha de actualización con el formato dd-mm-yyyy validando que el año esté entre 2000 y 2022
-# Lenguaje (siendo 0:Python, 1:Java, 2:C++, 3:Javascript, 4:Shell, 5:HTML, 6:Ruby, 7:Swift, 8: C#, 9:VB, 10:Go)
-# Cantidad de líneas de código
 
 
 def ordenar_x_titulo(vec):
@@ -75,15 +92,15 @@ def actualizar_proyecto(vec, indice, lineas, fecha):
 
 
 def calcular_cantidad_lineas(vec):
-    v = [] * 11
+    v = [0] * 11
     for i in vec:
-        v[i.lenguaje] += 1
+        v[i.lenguaje] += i.cant_lineas
     return v
 
 
 def mostrar_cant_lineas(v_acum_lineas):
     for i in range(len(v_acum_lineas)):
-        print("El lenguaje", convertir_titulo(i), " acumula ", v_acum_lineas[i], "lineas.")
+        print("El lenguaje", convertir_titulo(i), "acumula", v_acum_lineas[i], "lineas.")
 
 
 def ordenar_x_numero(vec):
