@@ -19,6 +19,5 @@ class Proyecto:
         res += " - Cantidad de lineas: " + str(self.cant_lineas)
         return res
 
-
 # proyecto = Proyecto(1, "12-06-2008", "ArtPac", 4, 120)
 # print(proyecto)

@@ -88,7 +88,7 @@ def busqueda_secuencial(vec, x):
 
 
 def actualizar_proyecto(vec, indice, lineas, fecha):
-    pass
+    return True
 
 
 def calcular_cantidad_lineas(vec):
