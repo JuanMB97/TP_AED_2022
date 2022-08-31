@@ -31,7 +31,6 @@ def esta_numero(vec, n):
     for i in vec:
         if i.numero == n:
             esta = True
-            print("el numero ", n, "ya esta en la lista")
             break
     return esta
 
@@ -48,9 +47,44 @@ def crear_proyecto_random():
     return Proyecto(numero, fecha, titulo, lenguaje, cant_lineas)
 
 
+def validar_fecha(fecha):
+    numeros = ("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
+    dato = ""
+    valido = False
+    n = len(fecha)
+    if n == 10:
+        valido = True
+        for i in range(n):
+            if i in (2, 5):
+                if fecha[i] != "-":
+                    valido = False
+                    break
+                if i == 2:
+                    if not 0 < int(dato) < 32:
+                        valido = False
+                        break
+                else:
+                    if not 0 < int(dato) < 13:
+                        valido = False
+                        break
+                dato = ""
+            else:
+                if fecha[i] not in numeros:
+                    valido = False
+                    break
+                dato = dato + fecha[i]
+                if i == n-1:
+                    if not 1999 < int(dato) < 2023:
+                        valido = False
+                        break
+    return valido
+
+
 def crear_proyecto_manual():
     numero = int(input("Ingrese el numero del proyecto: "))
-    fecha = input("Ingrese la fecha de creacion con el formato dd-mm-yyyy: ")
+    fecha = input("Fecha de creacion (Formato dd-mm-yyyy): ")
+    while not validar_fecha(fecha):
+        fecha = input("Fecha de creacion (Formato dd-mm-yyyy): ")
     titulo = input("Ingrese el nombre del proyecto: ")
     lenguaje = int(input("Ingrese el valor que corresponda: "))
     cant_lineas = int(input("Ingrese la cantidad de lineas del proyecto: "))
@@ -58,10 +92,17 @@ def crear_proyecto_manual():
 
 
 def cargar_proyectos(vec, n):
+    texto_opc = "\nAgregar proyectos de forma: \n1)Automatica \n2)Manual: \nRta: "
     for i in range(n):
-        proyecto = crear_proyecto_random()
-        while esta_numero(vec, proyecto.numero):
+        opc = int(input(texto_opc))
+        while 1 > opc or opc > 2:
+            opc = int(input(texto_opc))
+        if opc == 1:
             proyecto = crear_proyecto_random()
+        else:
+            proyecto = crear_proyecto_manual()
+        while esta_numero(vec, proyecto.numero):
+            proyecto = crear_proyecto_manual()
         vec.append(proyecto)
 
 
