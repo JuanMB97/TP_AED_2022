@@ -178,9 +178,55 @@ def mostrar_lenguajes():
     return texto
 
 
+def obtener_anio(proyecto):
+    anio = int(proyecto[6:10])
+    return anio
+
+
+def calcular_proyectos_x_anio(vec, v_cant):
+    for i in range(len(vec)):
+        anio = obtener_anio(vec[i].fecha)
+        v_cant[anio-2000] += 1
+    return v_cant
+
+
+def mostrar_proyectos_anio(v_indice):
+    texto = ""
+    for i in range(len(v_indice)):
+        if v_indice[i] != 0:
+            texto += "\nEn el año " + str(i + 2000) + " se actualizaron " + str(v_indice[i]) + " proyectos."
+    return texto
+
+
+def obtener_cant_mayor(v_cant_x_fecha):
+    my = 0
+    for i in v_cant_x_fecha:
+        if i > my:
+            my = i
+    return my
+
+
+def mostrar_cant_mayor(v_cant, x):
+    v = []
+    texto = "La mayor cantidad de proyecto actualizados es de " + str(x)
+    for i in range(len(v_cant)):
+        if v_cant[i] == x:
+            v.append(i + 2000)
+    if len(v) == 1:
+        texto += " y fue en el año " + str(v[0])
+    else:
+        texto += " y fue en los siguientes años "
+        for i in v:
+            texto += str(i) + " "
+    return texto
+
+
 def principal():
     vec = []
+    v_cant_x_fecha = [0] * 23
     op = -1
+    bandera_5 = False
+
     while op != 0:
         if op == 1:
             n = int(input('Ingrese la cantidad de proyectos a cargar:'))
@@ -194,6 +240,7 @@ def principal():
                 if op == 2:
                     ordenar_x_titulo(vec)
                     mostrar_proyecto(vec)
+
                 elif op == 3:
                     x = int(input('ACTUALIZAR: Ingrese el numero del proyecto:'))
                     indice = busqueda_secuencial(vec, x)
@@ -202,11 +249,16 @@ def principal():
                         actualizar_proyecto(vec[indice])
                     else:
                         print("El proyecto Nº", x, "no existe.")
+
                 elif op == 4:
                     v_acum_lineas = calcular_cantidad_lineas(vec)
                     mostrar_cant_lineas(v_acum_lineas)
+
                 elif op == 5:
-                    pass
+                    calcular_proyectos_x_anio(vec, v_cant_x_fecha)
+                    print(mostrar_proyectos_anio(v_cant_x_fecha))
+                    bandera_5 = True
+
                 elif op == 6:
                     print(mostrar_lenguajes())
                     ln = int(input("Que lenguaje desea filtrar? (Escriba el ID): "))
@@ -214,8 +266,13 @@ def principal():
                         ln = int(input("ERROR - Que lenguaje desea filtrar? (Escriba el ID): "))
                     ordenar_x_numero(vec)
                     mostrar_x_lenguaje(vec, ln)
+
                 elif op == 7:
-                    pass
+                    if bandera_5:
+                        x = obtener_cant_mayor(v_cant_x_fecha)
+                        print(mostrar_cant_mayor(v_cant_x_fecha, x))
+                    else:
+                        print("Primero debe calcular la cantidad de proyectos por año (PUNTO 5)")
             else:
                 print("Primero deber cargar los proyectos")
         mostrar_menu()
