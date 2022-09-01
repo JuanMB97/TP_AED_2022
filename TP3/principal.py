@@ -5,25 +5,29 @@
     Participantes:
     Barreto Juan Manuel, 77643, [1K15]
     Carrizo Nahuel, 87557, [1K15]
-    Flores Principe Alejandro Hernan, 79059, [1K15] """
+    Flores Principe Alejandro Hernan, 79059, [1K15]
+
+"""
 
 from registro import *
 import random
 
 
 def mostrar_menu():
-    print("\n==================================================================================")
-    print("\t\t\t\t\t\t\tMenu de Búsqueda")
-    print("==================================================================================")
-    print('\t1- Cargar proyectos', end=' | ')
-    print('2- Listar proyectos', end=' | ')
-    print('3- Actualizar proyecto')
-    print('\t4- Resumen por lenguaje', end=' | ')
-    print('5- Resumen por año', end=' | ')
-    print('6- Filtrar lenguaje')
-    print('\t' * 3, '7- Productividad:', end=' | ')
-    print('0- Salir del Programa', end=' | ')
-    print("\n==================================================================================")
+    sep = "=" * 90
+    texto = "\n" + sep
+    texto += "\n\t\t\t\t\t\t\t\t\tMenu de opciones\n"
+    texto += sep
+    texto += '\n1- Cargar proyectos'
+    texto += '\n2- Listar proyectos: Mostrar proyectos ordenados por titulo.'
+    texto += '\n3- Actualizar proyecto: Modificar la cantidad de lineas y la fecha de actualizacion.'
+    texto += '\n4- Resumen por lenguaje: Calcular la cantidad de lineas por lenguaje.'
+    texto += '\n5- Resumen por año: Calcular la cantidad de proyectos actualizados por anio.'
+    texto += '\n6- Filtrar lenguaje: Mostrar ordenados por numero, los proyectos hecho en un lenguaje.'
+    texto += '\n7- Productividad: Mostrar el/los anio con mayor cantidad de proyectos actualizados.'
+    texto += '\n0- Salir del Programa.\n'
+    texto += sep
+    return texto
 
 
 def esta_numero(vec, n):
@@ -84,15 +88,18 @@ def validar_fecha(fecha):
     return valido
 
 
-def crear_proyecto_manual():
-    numero = int(input("Ingrese el numero del proyecto: "))
-    fecha = input("Fecha de creacion (Formato dd-mm-yyyy): ")
+def crear_proyecto_manual(n):
+    n = str(n)
+    numero = int(input(n + "-Ingrese el numero del proyecto: "))
+    while numero < 1:
+        numero = int(input(n + "-Ingrese el numero del proyecto: "))
+    fecha = input(n + "-Fecha de creacion (Formato dd-mm-yyyy): ")
     while not validar_fecha(fecha):
-        fecha = input("Fecha de creacion (Formato dd-mm-yyyy): ")
-    titulo = input("Ingrese el nombre del proyecto: ")
+        fecha = input(n + "-Fecha de creacion (Formato dd-mm-yyyy): ")
+    titulo = input(n + "-Ingrese el nombre del proyecto: ")
     print("\n" + mostrar_lenguajes())
-    lenguaje = int(input("Ingrese el valor que corresponda: "))
-    cant_lineas = int(input("Ingrese la cantidad de lineas del proyecto: "))
+    lenguaje = int(input(n + "-Ingrese el valor que corresponda: "))
+    cant_lineas = int(input(n + "-Ingrese la cantidad de lineas del proyecto: "))
     return Proyecto(numero, fecha, titulo, lenguaje, cant_lineas)
 
 
@@ -103,13 +110,13 @@ def cargar_proyectos(vec, n):
         opc = int(input(texto_opc))
     for i in range(n):
         if opc == 1:
-            proyecto = crear_proyecto_random()
+            proyecto = crear_proyecto_random(i+1)
         else:
-            proyecto = crear_proyecto_manual()
+            proyecto = crear_proyecto_manual(i+1)
         while esta_numero(vec, proyecto.numero):
             if opc == 2:
                 print("\nEl proyecto N:", proyecto.numero, "ya existe, intente cargar otro.")
-            proyecto = crear_proyecto_manual()
+            proyecto = crear_proyecto_manual(i+1)
         vec.append(proyecto)
 
 
@@ -178,14 +185,9 @@ def mostrar_lenguajes():
     return texto
 
 
-def obtener_anio(proyecto):
-    anio = int(proyecto[6:10])
-    return anio
-
-
 def calcular_proyectos_x_anio(vec, v_cant):
     for i in range(len(vec)):
-        anio = obtener_anio(vec[i].fecha)
+        anio = int(vec[i].fecha[6:10])
         v_cant[anio-2000] += 1
     return v_cant
 
@@ -215,9 +217,10 @@ def mostrar_cant_mayor(v_cant, x):
     if len(v) == 1:
         texto += " y fue en el año " + str(v[0])
     else:
-        texto += " y fue en los siguientes años "
+        texto += " y fue en los siguientes años"
         for i in v:
-            texto += str(i) + " "
+            texto += ", " + str(i)
+        texto += "."
     return texto
 
 
@@ -234,7 +237,7 @@ def principal():
                 n = int(input('Ingrese la cantidad de proyectos a cargar (Mayor a cero):'))
             cargar_proyectos(vec, n)
             print('Proyectos cargados...')
-
+            bandera_5 = False
         elif 2 <= op <= 7:
             if len(vec) != 0:
                 if op == 2:
@@ -272,10 +275,12 @@ def principal():
                         x = obtener_cant_mayor(v_cant_x_fecha)
                         print(mostrar_cant_mayor(v_cant_x_fecha, x))
                     else:
-                        print("Primero debe calcular la cantidad de proyectos por año (PUNTO 5)")
+                        print("Primero debe calcular la cantidad de proyectos por año (PUNTO 5), "
+                              "o volver a calcularlo en caso de haber agregado nuevos proyectos.")
+
             else:
-                print("Primero deber cargar los proyectos")
-        mostrar_menu()
+                print("Primero deber cargar los proyectos (PUNTO 1)")
+        print(mostrar_menu())
         op = int(input('\nIngrese una opcion (Con cero sale):'))
 
 
