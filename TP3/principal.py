@@ -14,18 +14,18 @@ import random
 
 
 def mostrar_menu():
-    sep = "=" * 90
+    sep = "=" * 120
     texto = "\n" + sep
     texto += "\n\t\t\t\t\t\t\t\t\tMenu de opciones\n"
     texto += sep
-    texto += '\n1- Cargar proyectos'
-    texto += '\n2- Listar proyectos: Mostrar proyectos ordenados por titulo.'
-    texto += '\n3- Actualizar proyecto: Modificar la cantidad de lineas y la fecha de actualizacion.'
-    texto += '\n4- Resumen por lenguaje: Calcular la cantidad de lineas por lenguaje.'
-    texto += '\n5- Resumen por año: Calcular la cantidad de proyectos actualizados por anio.'
-    texto += '\n6- Filtrar lenguaje: Mostrar ordenados por numero, los proyectos hecho en un lenguaje.'
-    texto += '\n7- Productividad: Mostrar el/los anio con mayor cantidad de proyectos actualizados.'
-    texto += '\n0- Salir del Programa.\n'
+    texto += '\n\t1- Cargar proyectos'
+    texto += '\n\t2- Listar proyectos: Mostrar proyectos ordenados por titulo.'
+    texto += '\n\t3- Actualizar proyecto: Modificar la cantidad de lineas y la fecha de actualizacion.'
+    texto += '\n\t4- Resumen por lenguaje: Calcular la cantidad de lineas por lenguaje.'
+    texto += '\n\t5- Resumen por año: Calcular la cantidad de proyectos actualizados por anio.'
+    texto += '\n\t6- Filtrar lenguaje: Mostrar ordenados por numero, los proyectos hecho en un lenguaje.'
+    texto += '\n\t7- Productividad: Mostrar el/los anio con mayor cantidad de proyectos actualizados.'
+    texto += '\n\t0- Salir del Programa.\n'
     texto += sep
     return texto
 
@@ -110,7 +110,7 @@ def cargar_proyectos(vec, n):
         opc = int(input(texto_opc))
     for i in range(n):
         if opc == 1:
-            proyecto = crear_proyecto_random(i+1)
+            proyecto = crear_proyecto_random()
         else:
             proyecto = crear_proyecto_manual(i+1)
         while esta_numero(vec, proyecto.numero):
@@ -173,9 +173,13 @@ def ordenar_x_numero(vec):
 
 
 def mostrar_x_lenguaje(vec, ln):
+    cant = 0
     for i in vec:
         if i.lenguaje == ln:
+            cant += 1
             print(i)
+    if cant == 0:
+        print('no se encuentran proyectos con el lenguaje buscado')
 
 
 def mostrar_lenguajes():
