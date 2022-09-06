@@ -1,4 +1,4 @@
-"""         TRABAJO PRÁCTICO N°3:
+""""         TRABAJO PRÁCTICO N°3:
     MATERIA: ALGORITMOS Y ESTRUCTURAS DE DATOS
     Curso: 1K15
     Año: 2022
@@ -30,12 +30,18 @@ def mostrar_menu():
     return texto
 
 
-# Funcion: verifica que el vector haya sido cargado
-def validar_cantidad(mensaje):
-    mens = int(input(mensaje))
-    while mens <= 0:
-        mens = int(input('Ingrese la cantidad de proyectos a cargar (Mayor a cero):'))
-    return mens
+def validar_inputs(mensaje, punto):
+    num = int(input(mensaje))
+    if punto == 0:
+        while num < 0 or num > 7:
+            num = int(input('Error -' + mensaje))
+    elif punto == 13:
+        while num <= 0:
+            num = int(input('Error -' + mensaje))
+    elif punto == 6:
+        while num < 0 or num > 10:
+            num = int(input('ERROR - ' + mensaje))
+    return num
 
 
 def esta_numero(vec, n):
@@ -49,6 +55,8 @@ def esta_numero(vec, n):
 
 # Funcion: crea el proyecto en forma automatica.
 def crear_proyecto_random():
+    titulos = 'Software Masters', ' Poder Programacion', 'Genios Digitals', 'Soft Solutions', 'Tech Savvy', 'Tech ' \
+            'Giants', 'Software Supports ', 'Cocos Capitals', 'Vates software', 'Compu Tech'
     numero = random.randint(1, 9999999)
     dia = str(random.randint(1, 31))
     mes = str(random.randint(1, 12))
@@ -57,8 +65,8 @@ def crear_proyecto_random():
     if len(mes) == 1:
         mes = '0' + mes
     anio = str(random.randint(2000, 2022))
-    fecha = dia + "-" + mes + "-" + anio
-    titulo = random.choice(['AR', 'BR', 'CH', 'PR', 'PE', 'CO', 'UR'])
+    fecha = dia + '-' + mes + '-' + anio
+    titulo = random.choice(titulos)
     lenguaje = random.randint(0, 10)
     cant_lineas = random.randint(500, 800)
     return Proyecto(numero, fecha, titulo, lenguaje, cant_lineas)
@@ -101,9 +109,7 @@ def validar_fecha(fecha):
 # Funcion: crea el proyecto en forma manual.
 def crear_proyecto_manual(n):
     n = str(n)
-    numero = int(input(n + '-Ingrese el numero del proyecto: '))
-    while numero < 1:
-        numero = int(input(n + '-Ingrese el numero del proyecto: '))
+    numero = validar_inputs('Ingrese el numero del proyecto: ', 13)
     fecha = input(n + '-Fecha de creacion (Formato dd-mm-yyyy): ')
     while not validar_fecha(fecha):
         fecha = input(n + '-Fecha de creacion (Formato dd-mm-yyyy): ')
@@ -127,7 +133,7 @@ def cargar_proyectos(vec, n):
             proyecto = crear_proyecto_manual(i+1)
         while esta_numero(vec, proyecto.numero):
             if opc == 2:
-                print('\nEl proyecto N:', proyecto.numero, 'ya existe, intente cargar otro.')
+                print('\nEl proyecto N°:', proyecto.numero, 'ya existe, intente cargar otro.')
             proyecto = crear_proyecto_manual(i+1)
         vec.append(proyecto)
 
@@ -146,7 +152,7 @@ def mostrar_proyecto(vec):
     for proyecto in vec:
         print(proyecto)
 
-        
+
 # Funcion: busca el numero del proyecto
 def busqueda_secuencial(vec, x):
     res = None
@@ -157,14 +163,17 @@ def busqueda_secuencial(vec, x):
     return res
 
 
+def validar_actualizacion(mensaje):
+    fecha = input(mensaje)
+    while not validar_fecha(fecha):
+        fecha = input('El formato es incorrecto - ' + mensaje)
+    return fecha
+
+
 # Funcion: actualiza la cantidad de lineas y la fecha del numero de proyecto buscado
 def actualizar_proyecto(proyecto):
-    lineas = int(input('Cantidad de lineas actualizada de ' + proyecto.titulo + ': '))
-    while lineas < 0:
-        lineas = int(input('La cantidad de lineas no puede ser menor a uno. Reintentelo: '))
-    fecha = input('Fecha de actualizacion de ' + proyecto.titulo + '. Con formato (dd-mm-yyyy): ')
-    while not validar_fecha(fecha):
-        fecha = input('Fecha de actualizacion de ' + proyecto.titulo + '. Con formato (dd-mm-yyyy):')
+    lineas = validar_inputs('Cantidad de lineas actualizada de ' + proyecto.titulo + ': ', 13)
+    fecha = validar_actualizacion('Ingrese fecha de actualizacion con formato (dd-mm-yyyy): ')
     proyecto.cant_lineas = lineas
     proyecto.fecha = fecha
 
@@ -179,16 +188,11 @@ def calcular_cantidad_lineas(vec):
 
 # Funcion: muestra las cantidad de lineas del lenguaje
 def mostrar_cant_lineas(v_acum_lineas):
+    sep = '=' * 33
+    print('\n' + sep + ' Listando cantidad de lineas de codigo por lenguajes ' + sep + '\n')
     for i in range(len(v_acum_lineas)):
         print('El lenguaje', convertir_titulo(i), 'acumula', v_acum_lineas[i], 'lineas.')
-
-        
-# Funcion: verifica que el lenguaje a filtrar sea correcto
-def validar_lenguaje(mensaje):
-    mens = int(input(mensaje))
-    while mens < 0 or mens > 10:
-        mens = int(input('ERROR - Que lenguaje desea filtrar? (Escriba el ID): '))
-    return mens
+    input('\nPresiones ENTER para continuar...')
 
 
 # Funcion: ordena por numero de proyecto
@@ -228,7 +232,7 @@ def calcular_proyectos_x_anio(vec, v_cant):
 
 # Funcion: muestra los proyectos por años
 def mostrar_proyectos_anio(v_indice):
-    texto = ''
+    texto = '\n' + '=' * 37 + ' Listando cantidad de actualizaciones por año ' + '=' * 37
     for i in range(len(v_indice)):
         if v_indice[i] != 0:
             texto += '\nEn el año ' + str(i + 2000) + ' se actualizaron ' + str(v_indice[i]) + ' proyectos.'
@@ -269,7 +273,7 @@ def principal():
 
     while op != 0:
         if op == 1:
-            n = validar_cantidad('Ingrese la cantidad de proyectos a cargar:')
+            n = validar_inputs('Ingrese la cantidad de proyectos a cargar:', 13)
             cargar_proyectos(vec, n)
             print('Proyectos cargados...')
             bandera_5 = False
@@ -278,9 +282,10 @@ def principal():
                 if op == 2:
                     ordenar_x_titulo(vec)
                     mostrar_proyecto(vec)
+                    input('Presione ENTER para continuar...')
 
                 elif op == 3:
-                    x = validar_cantidad('ACTUALIZAR: Ingrese el numero del proyecto:'))
+                    x = validar_inputs('ACTUALIZAR: Ingrese el numero del proyecto:', 13)
                     indice = busqueda_secuencial(vec, x)
                     if indice is not None:
                         print('Proyecto encontrado!!!')
@@ -295,11 +300,13 @@ def principal():
                 elif op == 5:
                     calcular_proyectos_x_anio(vec, v_cant_x_fecha)
                     print(mostrar_proyectos_anio(v_cant_x_fecha))
+                    input('Presiones enter para continuar...')
+
                     bandera_5 = True
 
                 elif op == 6:
                     print(mostrar_lenguajes())
-                    ln = validar_lenguaje('Que lenguaje desea filtrar? (Escriba el ID): ')
+                    ln = validar_inputs('Que lenguaje desea filtrar? (Escriba el ID): ', 6)
                     ordenar_x_numero(vec)
                     mostrar_x_lenguaje(vec, ln)
 
@@ -310,11 +317,12 @@ def principal():
                     else:
                         print('Primero debe calcular la cantidad de proyectos por año (PUNTO 5), '
                               'o volver a calcularlo en caso de haber agregado nuevos proyectos.')
+                        input("Presiones ENTER para continuar...")
 
             else:
-                print('Primero deber cargar los proyectos (PUNTO 1)')
+                input('Primero debe cargar los proyectos (PUNTO 1). Presione ENTER para continuar...')
         print(mostrar_menu())
-        op = int(input('\nIngrese una opcion (Con cero sale):'))
+        op = validar_inputs('Ingrese una opcion: ', 0)
 
 
 if __name__ == '__main__':
