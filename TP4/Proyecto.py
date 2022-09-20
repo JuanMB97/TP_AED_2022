@@ -10,7 +10,6 @@ class Proyecto:
         self.url = url
 
     def __str__(self):
-        #cadena = 'nombre_usuario: {} repositorio: {:<24} fecha_actualizacion: {} lenguaje: {} likes: {} tags: {} url: {}'
         cadena = '{:<24} {:<60} {} {:<20} {:<5} {:<330} {}'
         return cadena.format(self.nombre_usuario,
                              self.repositorio,
