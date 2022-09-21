@@ -1,5 +1,6 @@
 import os.path
 from Proyecto import *
+from datetime import datetime
 
 
 def mostrar_menu():
@@ -7,8 +8,8 @@ def mostrar_menu():
           '1) Cargar proyectos\n'
           '2) Mostrar proyectos que contengan cierta etiqueta (TAG)\n'
           '3) Determinar cantidad de proyectos por enguajes y listarlos de mayor a menor\n'
-          '4) Popularidad\n'
-          '5) Buscar proyecto actualizado\n'
+          '4) Crear matriz de popularidad\n'
+          '5) Buscar proyecto para actualizar fecha y url.\n'
           '6) Guardar populares\n'
           '7) Mostrar archivo\n'
           '8) Salir del Programa\n')
@@ -180,8 +181,8 @@ def determinar_mes(fecha):
     return mes
 
 
-def crear_martiz(v):
-    matriz = []
+def crear_martiz(v, matriz):
+
     for i in range(12):
         matriz.append([0] * 5)
 
@@ -192,11 +193,9 @@ def crear_martiz(v):
     return matriz
 
 
-def mostrar_matriz(matriz):
+def mostrar_matriz(matriz, meses):
     fila = len(matriz)
     columna = len(matriz[0])
-    meses = ("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre")
     star = "★"
     header = "POPULARIDAD"
 
@@ -211,11 +210,81 @@ def mostrar_matriz(matriz):
         print("\n")
 
 
+def calcular_total_actualizados_mes(v, mes):
+    n = len(v)
+    acum = 0
+    for i in range(n):
+        fecha = determinar_mes(v[i].fecha_actualizacion)
+        if fecha == mes:
+            acum += 1
+    return acum
+
+
+def validar_mes(meses):
+    msj = "\nVALOR MES\n"
+    for i in range(12):
+        msj += str(i+1) + ": " + meses[i] + "\n"
+    print(msj)
+
+    mes = int(input("Ingrese el VALOR del mes que desea ver: "))
+    while 1 > mes or mes > 12:
+        mes = int(input("VALOR INCORRECTO!\nIngrese el VALOR del mes que desea ver: "))
+    return mes
+
+
+def validar_si_no(mensaje):
+    n = int(input(mensaje + "(ESCRIBAR EL VALOR NUMERICO):" + "\n1:SI\n:No\n"))
+    while 1 > n or n > 2:
+        n = int(input(mensaje + "\n1:SI\n2:No\n"))
+    return n
+
+
+def buscar_repositorio(v, rep):
+    n = len(v)
+    indice = -1
+
+    for i in range(n):
+        if v[i].repositorio == rep:
+            indice = i
+            break
+    return indice
+
+
+def obtener_fecha():
+    date = datetime.now()
+    year = str(date.year)
+    month = str(date.month)
+    day = str(date.day)
+
+    if len(month) == 1:
+        month = "0" + month
+    if len(day) == 1:
+        day = "0" + day
+    return year + "-" + month + "-" + day
+
+
+def actualizar_campos(v, indice):
+    user_name = input("Ingresa el nombre de usuario en github")
+    repo = input("Ingresa el nombre del repositorio")
+    v[indice].url = "http://github.com/" + user_name + "/" + repo
+    v[indice].fecha_actualizacion = obtener_fecha()
+
+
+def grabar_binario(matriz, path_name='registros_populares.utn'):
+    # Falta terminar
+    m = open(path_name, 'wb')
+    m.close()
+
+
 def principal():
     op = -1
     v = []
     vuelta = 0
+    meses = ("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre")
     press = "Presione enter para continuar..."
+    matriz = []
+
     while op != 8:
         vuelta += 1
         if op == 1:
@@ -226,6 +295,7 @@ def principal():
             else:
                 print("Se cargaron", datos[0], "registros exitosamente, y", datos[1], "fueron omitidos.")
                 input(press)
+
         elif 1 < op < 8:
             if len(v) == 0:
                 input("Primero debe cargar los proyectos en memoria! " + press)
@@ -234,22 +304,40 @@ def principal():
                     tag = input("Ingrese la etiqueta a listar(TAG)")
                     v_tags = filtrado_x_tag(v, tag)
                     mostrar_x_tags(v_tags, tag)
-                    res = int(input("\nQuiere almacenar la lista en un archivo? \n1: Si \n2: No\n"))
+                    res = validar_si_no("\nQuiere almacenar la lista en un archivo?")
                     if res == 1:
                         grabar_registros(v_tags)
                         input("Se grabaron " + str(len(v_tags)) + " registros. " + press)
+
                 elif op == 3:
                     v_leng, v_acum = determinar_lenguajes(v)
                     ordenar_x_lenguaje(v_leng, v_acum)
                     mostrar_lenguajes_cantidad(v_leng, v_acum)
                     input("\n" + press)
+
                 elif op == 4:
-                    matriz = crear_martiz(v)
-                    mostrar_matriz(matriz)
+                    crear_martiz(v, matriz)
+                    mostrar_matriz(matriz, meses)
+                    n = validar_si_no("\nDesea ver el total de proyectos actualizados en algun mes?")
+                    if n == 1:
+                        mes = validar_mes(meses)
+                        total = calcular_total_actualizados_mes(v, mes)
+                        print("El mes de", meses[mes-1], "tiene un total de", total, "proyectos actualizados.")
+
                 elif op == 5:
-                    pass
+                    rep = input("Ingrese el nombre del repositorio: ")
+                    rep_indice = buscar_repositorio(v, rep)
+                    if rep_indice != -1:
+                        print("\nRepositorio encontrado!!!\n", v[rep_indice], "\nACTUALIZAR DATOS\n")
+                        actualizar_campos(v, rep_indice)
+                        print("\nProyecto actualizado!")
+                        print(v[rep_indice])
+                        input(press)
+
+                    else:
+                        input("El repositorio no existe. " + press)
                 elif op == 6:
-                    pass
+                    grabar_binario(matriz)
                 else:
                     pass
         elif vuelta > 1:

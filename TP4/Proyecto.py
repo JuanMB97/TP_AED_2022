@@ -10,11 +10,12 @@ class Proyecto:
         self.url = url
 
     def __str__(self):
-        cadena = '{:<24} {:<60} {} {:<20} {:<5} {:<330} {}'
-        return cadena.format(self.nombre_usuario,
-                             self.repositorio,
-                             self.fecha_actualizacion,
-                             self.lenguaje,
-                             self.likes,
-                             self.tags,
-                             self.url)
+        cadena = '\nuser: ' + self.nombre_usuario + "\n"
+        cadena += 'repo: ' + self.repositorio + "\n"
+        cadena += 'last-update: ' + self.fecha_actualizacion + "\n"
+        cadena += 'language: ' + self.lenguaje + "\n"
+        cadena += 'likes: ' + str(self.likes) + "k\n"
+        cadena += 'tags: ' + ','.join(self.tags) + "\n"
+        cadena += 'url: ' + self.url + "\n"
+
+        return cadena
