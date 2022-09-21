@@ -18,9 +18,3 @@ class Proyecto:
                              self.likes,
                              self.tags,
                              self.url)
-
-
-
-
-
-

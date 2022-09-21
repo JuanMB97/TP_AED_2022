@@ -6,7 +6,7 @@ def mostrar_menu():
     print('\n=== MENÚ ===\n'
           '1) Cargar proyectos\n'
           '2) Mostrar proyectos que contengan cierta etiqueta (TAG)\n'
-          '3) Lenguajes\n'
+          '3) Determinar cantidad de proyectos por enguajes y listarlos de mayor a menor\n'
           '4) Popularidad\n'
           '5) Buscar proyecto actualizado\n'
           '6) Guardar populares\n'
@@ -120,8 +120,95 @@ def mostrar_x_tags(v_tags, tag):
         print(proyecto)
 
 
-def grabar_registros(v):
-    pass
+def grabar_registros(v, path_name='proyectos_filtrados.csv'):
+    m = open(path_name, "wt")
+    m.write("nombre_usuario|repositorio|descripcion|fecha_actualizacion|lenguaje|estrellas|tags|url\n")
+    for i in v:
+        m.write(i.nombre_usuario + "|" +
+                i.repositorio + "|" +
+                i.fecha_actualizacion + "|" +
+                i.lenguaje + "|" +
+                str(i.likes) + "k|" +
+                ','.join(i.tags) + "|" +
+                i.url + "\n")
+    m.close()
+
+
+def obtener_indice(v_leng, lenguaje):
+    n = len(v_leng)
+    indice = -1
+    for i in range(n):
+        if lenguaje == v_leng[i]:
+            indice = i
+            break
+    return indice
+
+
+def determinar_lenguajes(v):
+    v_leng = []
+    v_acum = []
+    for i in v:
+        indice = obtener_indice(v_leng, i.lenguaje)
+        if indice == -1:
+            v_leng.append(i.lenguaje)
+            v_acum.append(1)
+        else:
+            v_acum[indice] += 1
+    return v_leng, v_acum
+
+
+def ordenar_x_lenguaje(v_leng, v_acum):
+    n = len(v_leng)
+
+    for i in range(n-1):
+        for j in range(i+1, n):
+            if v_acum[j] > v_acum[i]:
+                v_acum[i], v_acum[j] = v_acum[j], v_acum[i]
+                v_leng[i], v_leng[j] = v_leng[j], v_leng[i]
+
+
+def mostrar_lenguajes_cantidad(v_leng, v_acum):
+    n = len(v_leng)
+    print("\nListando cantidad de proyectos por lenguaje\n")
+    print("{:<20}".format("Lenguaje") + "Cantidad de proyectos")
+    for i in range(n):
+        print("{:<20}".format(v_leng[i]) + str(v_acum[i]))
+
+
+def determinar_mes(fecha):
+    mes = int(fecha[5:7])
+    return mes
+
+
+def crear_martiz(v):
+    matriz = []
+    for i in range(12):
+        matriz.append([0] * 5)
+
+    for i in v:
+        stars = determinar_estrellas(i.likes) - 1
+        mes = determinar_mes(i.fecha_actualizacion) - 1
+        matriz[mes][stars] += 1
+    return matriz
+
+
+def mostrar_matriz(matriz):
+    fila = len(matriz)
+    columna = len(matriz[0])
+    meses = ("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre")
+    star = "★"
+    header = "POPULARIDAD"
+
+    for i in range(5):
+        header += "{:>10}".format(star * (i + 1))
+    print(header)
+
+    for i in range(fila):
+        print("{:<20}".format(meses[i]), end="")
+        for j in range(columna):
+            print("{:<10}".format(matriz[i][j]), end=" ")
+        print("\n")
 
 
 def principal():
@@ -141,19 +228,24 @@ def principal():
                 input(press)
         elif 1 < op < 8:
             if len(v) == 0:
-                input("Primero debe cargar los proyectos en memoria!")
+                input("Primero debe cargar los proyectos en memoria! " + press)
             else:
                 if op == 2:
                     tag = input("Ingrese la etiqueta a listar(TAG)")
                     v_tags = filtrado_x_tag(v, tag)
                     mostrar_x_tags(v_tags, tag)
-                    res = input("\nQuiere almacenar la lista en un archivo? \n1: Si \n2: No\n")
+                    res = int(input("\nQuiere almacenar la lista en un archivo? \n1: Si \n2: No\n"))
                     if res == 1:
                         grabar_registros(v_tags)
+                        input("Se grabaron " + str(len(v_tags)) + " registros. " + press)
                 elif op == 3:
-                    pass
+                    v_leng, v_acum = determinar_lenguajes(v)
+                    ordenar_x_lenguaje(v_leng, v_acum)
+                    mostrar_lenguajes_cantidad(v_leng, v_acum)
+                    input("\n" + press)
                 elif op == 4:
-                    pass
+                    matriz = crear_martiz(v)
+                    mostrar_matriz(matriz)
                 elif op == 5:
                     pass
                 elif op == 6:
