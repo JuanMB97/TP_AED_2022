@@ -333,7 +333,7 @@ def principal():
                         print("\nProyecto actualizado!")
                         print(v[rep_indice])
                         input(press)
-
+                        
                     else:
                         input("El repositorio no existe. " + press)
                 elif op == 6:

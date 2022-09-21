@@ -1,4 +1,3 @@
-
 class Proyecto:
     def __init__(self, nombre_usuario, repositorio, fecha_actualizacion, lenguaje, likes, tags, url):
         self.nombre_usuario = nombre_usuario
