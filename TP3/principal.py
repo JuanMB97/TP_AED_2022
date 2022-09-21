@@ -56,7 +56,7 @@ def esta_numero(vec, n):
 # Funcion: crea el proyecto en forma automatica.
 def crear_proyecto_random():
     titulos = 'Software Masters', ' Poder Programacion', 'Genios Digitals', 'Soft Solutions', 'Tech Savvy', 'Tech ' \
-            'Giants', 'Software Supports ', 'Cocos Capitals', 'Vates software', 'Compu Tech'
+                                                                                                            'Giants', 'Software Supports ', 'Cocos Capitals', 'Vates software', 'Compu Tech'
     numero = random.randint(1, 9999999)
     dia = str(random.randint(1, 31))
     mes = str(random.randint(1, 12))
@@ -99,7 +99,7 @@ def validar_fecha(fecha):
                     valido = False
                     break
                 dato = dato + fecha[i]
-                if i == n-1:
+                if i == n - 1:
                     if not 1999 < int(dato) < 2023:
                         valido = False
                         break
@@ -130,11 +130,11 @@ def cargar_proyectos(vec, n):
         if opc == 1:
             proyecto = crear_proyecto_random()
         else:
-            proyecto = crear_proyecto_manual(i+1)
+            proyecto = crear_proyecto_manual(i + 1)
         while esta_numero(vec, proyecto.numero):
             if opc == 2:
                 print('\nEl proyecto N°:', proyecto.numero, 'ya existe, intente cargar otro.')
-            proyecto = crear_proyecto_manual(i+1)
+            proyecto = crear_proyecto_manual(i + 1)
         vec.append(proyecto)
 
 
@@ -177,7 +177,7 @@ def actualizar_proyecto(proyecto):
     proyecto.cant_lineas = lineas
     proyecto.fecha = fecha
 
-    
+
 # Funcion: carga las cantidad de lineas del lenguaje
 def calcular_cantidad_lineas(vec):
     v = [0] * 11
@@ -202,7 +202,7 @@ def ordenar_x_numero(vec):
             if vec[i].numero > vec[j].numero:
                 vec[i], vec[j] = vec[j], vec[i]
 
-                
+
 # Funcion: muestra el lenguaje a buscar
 def mostrar_x_lenguaje(vec, ln):
     cant = 0
@@ -213,7 +213,7 @@ def mostrar_x_lenguaje(vec, ln):
     if cant == 0:
         print('no se encuentran proyectos con el lenguaje buscado')
 
-        
+
 # Funcion: muestra la totalidad de lenguajes
 def mostrar_lenguajes():
     texto = '{:<3}'.format('ID') + '| LENGUAJE'
@@ -226,7 +226,7 @@ def mostrar_lenguajes():
 def calcular_proyectos_x_anio(vec, v_cant):
     for i in range(len(vec)):
         anio = int(vec[i].fecha[6:10])
-        v_cant[anio-2000] += 1
+        v_cant[anio - 2000] += 1
     return v_cant
 
 
