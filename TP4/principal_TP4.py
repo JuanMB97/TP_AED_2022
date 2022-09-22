@@ -1,6 +1,8 @@
 import os.path
+import pickle
 from Proyecto import *
 from datetime import datetime
+from Popular import *
 
 
 def mostrar_menu():
@@ -10,8 +12,8 @@ def mostrar_menu():
           '3) Determinar cantidad de proyectos por enguajes y listarlos de mayor a menor\n'
           '4) Crear matriz de popularidad\n'
           '5) Buscar proyecto para actualizar fecha y url.\n'
-          '6) Guardar populares\n'
-          '7) Mostrar archivo\n'
+          '6) Guardar en disco un archivo con los datos de la matriz generada en el punto 4.\n'
+          '7) Mostrar la matriz del archivo grabado en el punto 6.\n'
           '8) Salir del Programa\n')
 
 
@@ -233,7 +235,7 @@ def validar_mes(meses):
 
 
 def validar_si_no(mensaje):
-    n = int(input(mensaje + "(ESCRIBAR EL VALOR NUMERICO):" + "\n1:SI\n:No\n"))
+    n = int(input(mensaje + "(ESCRIBAR EL VALOR NUMERICO):" + "\n1:SI\n2:NO\n"))
     while 1 > n or n > 2:
         n = int(input(mensaje + "\n1:SI\n2:No\n"))
     return n
@@ -270,10 +272,31 @@ def actualizar_campos(v, indice):
     v[indice].fecha_actualizacion = obtener_fecha()
 
 
-def grabar_binario(matriz, path_name='registros_populares.utn'):
-    # Falta terminar
-    m = open(path_name, 'wb')
+def grabar_binario(v, path_name='registros_populares.utn'):
+    m = open(path_name, 'a+b')
+    for i in v:
+        pickle.dump(i, m)
     m.close()
+
+
+def crear_vector_popular(vec, matriz, meses):
+    fila = len(matriz)
+    columna = len(matriz[0])
+
+    for i in range(fila):
+        for j in range(columna):
+            cant_proyectos = matriz[i][j]
+            if cant_proyectos != 0:
+                reg = Popular(meses[i], j + 1, cant_proyectos)
+                vec.append(reg)
+                # print(reg)
+
+
+def leer_binario(path_file='registros_populares.utn'):
+    v = []
+    m = open(path_file, 'rb')
+    m.close()
+    return v
 
 
 def principal():
@@ -284,6 +307,7 @@ def principal():
              "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre")
     press = "Presione enter para continuar..."
     matriz = []
+    v_popular = []
 
     while op != 8:
         vuelta += 1
@@ -301,14 +325,16 @@ def principal():
                 input("Primero debe cargar los proyectos en memoria! " + press)
             else:
                 if op == 2:
-                    tag = input("Ingrese la etiqueta a listar(TAG)")
+                    tag = input("Ingrese la etiqueta a listar(TAG): ")
                     v_tags = filtrado_x_tag(v, tag)
-                    mostrar_x_tags(v_tags, tag)
-                    res = validar_si_no("\nQuiere almacenar la lista en un archivo?")
-                    if res == 1:
-                        grabar_registros(v_tags)
-                        input("Se grabaron " + str(len(v_tags)) + " registros. " + press)
-
+                    if len(v_tags) != 0:
+                        mostrar_x_tags(v_tags, tag)
+                        res = validar_si_no("\nQuiere almacenar la lista en un archivo?")
+                        if res == 1:
+                            grabar_registros(v_tags)
+                            input("Se grabaron " + str(len(v_tags)) + " registros. " + press)
+                    else:
+                        input("Ningun proyecto tiene la etiqueta #" + tag + ". " + press)
                 elif op == 3:
                     v_leng, v_acum = determinar_lenguajes(v)
                     ordenar_x_lenguaje(v_leng, v_acum)
@@ -332,14 +358,16 @@ def principal():
                         actualizar_campos(v, rep_indice)
                         print("\nProyecto actualizado!")
                         print(v[rep_indice])
-                        input(press)
-                        
                     else:
                         input("El repositorio no existe. " + press)
+
                 elif op == 6:
-                    grabar_binario(matriz)
+                    crear_vector_popular(v_popular, matriz, meses)
+                    grabar_binario(v_popular)
+                    print("Se ha grabado ")
                 else:
-                    pass
+                    matriz_bin = leer_binario()
+                    mostrar_matriz(matriz_bin, meses)
         elif vuelta > 1:
             input("El valor no corresponde a una opcion valida. " + press)
 
