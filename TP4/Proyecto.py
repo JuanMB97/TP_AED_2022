@@ -16,5 +16,4 @@ class Proyecto:
         cadena += 'likes: ' + str(self.likes) + "k\n"
         cadena += 'tags: ' + ','.join(self.tags) + "\n"
         cadena += 'url: ' + self.url + "\n"
-
         return cadena

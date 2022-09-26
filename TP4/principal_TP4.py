@@ -184,13 +184,30 @@ def determinar_mes(fecha):
 
 
 def crear_martiz(v, matriz):
-
     for i in range(12):
         matriz.append([0] * 5)
 
     for i in v:
         stars = determinar_estrellas(i.likes) - 1
         mes = determinar_mes(i.fecha_actualizacion) - 1
+        matriz[mes][stars] += 1
+
+
+def obtener_num_mes(mes, meses):
+    for j in range(len(meses)):
+        if meses[j] == mes:
+            mes = j
+            break
+    return mes
+
+
+def recrear_matriz_popular(v, meses):
+    matriz = []
+    for i in range(12):
+        matriz.append([0] * 5)
+    for i in v:
+        stars = determinar_estrellas(i.likes) - 1
+        mes = obtener_num_mes(i.mes, meses)
         matriz[mes][stars] += 1
     return matriz
 
@@ -294,8 +311,13 @@ def crear_vector_popular(vec, matriz, meses):
 
 def leer_binario(path_file='registros_populares.utn'):
     v = []
-    m = open(path_file, 'rb')
-    m.close()
+    if os.path.exists(path_file):
+        m = open(path_file, 'rb')
+        pos = os.path.getsize(path_file)
+        while m.tell() < pos:
+            registro = pickle.load(m)
+            v.append(registro)
+        m.close()
     return v
 
 
@@ -366,7 +388,8 @@ def principal():
                     grabar_binario(v_popular)
                     print("Se ha grabado ")
                 else:
-                    matriz_bin = leer_binario()
+                    v_archivo = leer_binario()
+                    matriz_bin = recrear_matriz_popular(v_archivo, meses)
                     mostrar_matriz(matriz_bin, meses)
         elif vuelta > 1:
             input("El valor no corresponde a una opcion valida. " + press)
