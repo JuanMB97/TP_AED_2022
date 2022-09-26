@@ -37,7 +37,7 @@ def add_in_order(vec, proyecto):
 
 def filtrar_linea(v, campos):
     res = True
-    if campos[4] == "":
+    if campos[4] == '':
         res = False
 
     # Si el campo lenguaje no viene vacio, verificar si el proyecto ya existe en el vector a traves del URL.
@@ -48,13 +48,13 @@ def filtrar_linea(v, campos):
     return res
 
 
-def cargar_archivo(v, path_file="proyectos.csv"):
+def cargar_archivo(v, path_file='proyectos.csv'):
     # Datos es un vector con dos valores → 0: Cantidad de proyectos cargados 1: Cantidad de proyectos omitidos
     datos = [0] * 2
 
     if os.path.exists(path_file):
         nro_linea = 0
-        m = open(path_file, mode="rt", encoding="utf8")
+        m = open(path_file, mode='rt', encoding='utf8')
         for linea in m:
             nro_linea += 1
             if nro_linea == 1:
@@ -71,7 +71,7 @@ def cargar_archivo(v, path_file="proyectos.csv"):
                 fecha_actualizacion = campos[3]
                 lenguaje = campos[4]
                 likes = float(campos[5][:-1])
-                tags = campos[6].split(",")
+                tags = campos[6].split(',')
                 url = campos[7]
     
                 proyecto = Proyecto(nombre_usuario, repositorio, fecha_actualizacion, lenguaje, likes, tags, url)
@@ -111,29 +111,29 @@ def filtrado_x_tag(v, tag):
 
 
 def mostrar_x_tags(v_tags, tag):
-    print("\nListando proyectos con la etiqueta", tag, "\n")
-    print('{:<20}'.format("Nombre de usuario ") +
-          '{:<25}'.format("Fecha de actualiacion ") +
-          '{:<15}'.format("Estrellas "))
+    print('\nListando proyectos con la etiqueta', tag, '\n')
+    print('{:<20}'.format('Nombre de usuario ') +
+          '{:<25}'.format('Fecha de actualiacion ') +
+          '{:<15}'.format('Estrellas '))
     for i in v_tags:
         stars = determinar_estrellas(i.likes)
         proyecto = '{:<20}'.format(i.nombre_usuario)
         proyecto += '{:<25}'.format(i.fecha_actualizacion)
-        proyecto += '{:<15}'.format("★" * stars)
+        proyecto += '{:<15}'.format('★' * stars)
         print(proyecto)
 
 
 def grabar_registros(v, path_name='proyectos_filtrados.csv'):
-    m = open(path_name, "wt")
-    m.write("nombre_usuario|repositorio|descripcion|fecha_actualizacion|lenguaje|estrellas|tags|url\n")
+    m = open(path_name, 'wt')
+    m.write('nombre_usuario|repositorio|descripcion|fecha_actualizacion|lenguaje|estrellas|tags|url\n')
     for i in v:
-        m.write(i.nombre_usuario + "|" +
-                i.repositorio + "|" +
-                i.fecha_actualizacion + "|" +
-                i.lenguaje + "|" +
-                str(i.likes) + "k|" +
-                ','.join(i.tags) + "|" +
-                i.url + "\n")
+        m.write(i.nombre_usuario + '|' +
+                i.repositorio + '|' +
+                i.fecha_actualizacion + '|' +
+                i.lenguaje + '|' +
+                str(i.likes) + 'k|' +
+                ','.join(i.tags) + '|' +
+                i.url + '\n')
     m.close()
 
 
@@ -172,10 +172,10 @@ def ordenar_x_lenguaje(v_leng, v_acum):
 
 def mostrar_lenguajes_cantidad(v_leng, v_acum):
     n = len(v_leng)
-    print("\nListando cantidad de proyectos por lenguaje\n")
-    print("{:<20}".format("Lenguaje") + "Cantidad de proyectos")
+    print('\nListando cantidad de proyectos por lenguaje\n')
+    print('{:<20}'.format('Lenguaje') + 'Cantidad de proyectos')
     for i in range(n):
-        print("{:<20}".format(v_leng[i]) + str(v_acum[i]))
+        print('{:<20}'.format(v_leng[i]) + str(v_acum[i]))
 
 
 def determinar_mes(fecha):
@@ -215,18 +215,18 @@ def recrear_matriz_popular(v, meses):
 def mostrar_matriz(matriz, meses):
     fila = len(matriz)
     columna = len(matriz[0])
-    star = "★"
-    header = "POPULARIDAD"
+    star = '★'
+    header = 'POPULARIDAD'
 
     for i in range(5):
-        header += "{:>10}".format(star * (i + 1))
+        header += '{:>10}'.format(star * (i + 1))
     print(header)
 
     for i in range(fila):
-        print("{:<20}".format(meses[i]), end="")
+        print('{:<20}'.format(meses[i]), end='')
         for j in range(columna):
-            print("{:<10}".format(matriz[i][j]), end=" ")
-        print("\n")
+            print('{:<10}'.format(matriz[i][j]), end=' ')
+        print('\n')
 
 
 def calcular_total_actualizados_mes(v, mes):
@@ -240,21 +240,21 @@ def calcular_total_actualizados_mes(v, mes):
 
 
 def validar_mes(meses):
-    msj = "\nVALOR MES\n"
+    msj = '\nVALOR MES\n'
     for i in range(12):
-        msj += str(i+1) + ": " + meses[i] + "\n"
+        msj += str(i+1) + ': ' + meses[i] + '\n'
     print(msj)
 
-    mes = int(input("Ingrese el VALOR del mes que desea ver: "))
+    mes = int(input('Ingrese el VALOR del mes que desea ver: '))
     while 1 > mes or mes > 12:
-        mes = int(input("VALOR INCORRECTO!\nIngrese el VALOR del mes que desea ver: "))
+        mes = int(input('VALOR INCORRECTO!\nIngrese el VALOR del mes que desea ver: '))
     return mes
 
 
 def validar_si_no(mensaje):
-    n = int(input(mensaje + "(ESCRIBAR EL VALOR NUMERICO):" + "\n1:SI\n2:NO\n"))
+    n = int(input(mensaje + '(ESCRIBAR EL VALOR NUMERICO):' + '\n1:SI\n2:NO\n'))
     while 1 > n or n > 2:
-        n = int(input(mensaje + "\n1:SI\n2:No\n"))
+        n = int(input(mensaje + '\n1:SI\n2:No\n'))
     return n
 
 
@@ -276,16 +276,16 @@ def obtener_fecha():
     day = str(date.day)
 
     if len(month) == 1:
-        month = "0" + month
+        month = '0' + month
     if len(day) == 1:
-        day = "0" + day
-    return year + "-" + month + "-" + day
+        day = '0' + day
+    return year + '-' + month + '-' + day
 
 
 def actualizar_campos(v, indice):
-    user_name = input("Ingresa el nombre de usuario en github")
-    repo = input("Ingresa el nombre del repositorio")
-    v[indice].url = "http://github.com/" + user_name + "/" + repo
+    user_name = input('Ingresa el nombre de usuario en github')
+    repo = input('Ingresa el nombre del repositorio')
+    v[indice].url = 'http://github.com/' + user_name + '/' + repo
     v[indice].fecha_actualizacion = obtener_fecha()
 
 
@@ -325,9 +325,9 @@ def principal():
     op = -1
     v = []
     vuelta = 0
-    meses = ("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre")
-    press = "Presione enter para continuar..."
+    meses = ('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre')
+    press = 'Presione enter para continuar...'
     matriz = []
     v_popular = []
 
@@ -336,68 +336,68 @@ def principal():
         if op == 1:
             datos = cargar_archivo(v)
             if datos[0] == 0 and datos[1] == 0:
-                print("La ruta del archivo no se encontro")
+                print('La ruta del archivo no se encontro')
                 input(press)
             else:
-                print("Se cargaron", datos[0], "registros exitosamente, y", datos[1], "fueron omitidos.")
+                print('Se cargaron', datos[0], 'registros exitosamente, y', datos[1], 'fueron omitidos.')
                 input(press)
 
         elif 1 < op < 8:
             if len(v) == 0:
-                input("Primero debe cargar los proyectos en memoria! " + press)
+                input('Primero debe cargar los proyectos en memoria! ' + press)
             else:
                 if op == 2:
-                    tag = input("Ingrese la etiqueta a listar(TAG): ")
+                    tag = input('Ingrese la etiqueta a listar(TAG): ')
                     v_tags = filtrado_x_tag(v, tag)
                     if len(v_tags) != 0:
                         mostrar_x_tags(v_tags, tag)
-                        res = validar_si_no("\nQuiere almacenar la lista en un archivo?")
+                        res = validar_si_no('\nQuiere almacenar la lista en un archivo?')
                         if res == 1:
                             grabar_registros(v_tags)
-                            input("Se grabaron " + str(len(v_tags)) + " registros. " + press)
+                            input('Se grabaron ' + str(len(v_tags)) + ' registros. ' + press)
                     else:
-                        input("Ningun proyecto tiene la etiqueta #" + tag + ". " + press)
+                        input('Ningun proyecto tiene la etiqueta #' + tag + '. ' + press)
                 elif op == 3:
                     v_leng, v_acum = determinar_lenguajes(v)
                     ordenar_x_lenguaje(v_leng, v_acum)
                     mostrar_lenguajes_cantidad(v_leng, v_acum)
-                    input("\n" + press)
+                    input('\n' + press)
 
                 elif op == 4:
                     crear_martiz(v, matriz)
                     mostrar_matriz(matriz, meses)
-                    n = validar_si_no("\nDesea ver el total de proyectos actualizados en algun mes?")
+                    n = validar_si_no('\nDesea ver el total de proyectos actualizados en algun mes?')
                     if n == 1:
                         mes = validar_mes(meses)
                         total = calcular_total_actualizados_mes(v, mes)
-                        print("El mes de", meses[mes-1], "tiene un total de", total, "proyectos actualizados.")
+                        print('El mes de', meses[mes-1], 'tiene un total de', total, 'proyectos actualizados.')
 
                 elif op == 5:
-                    rep = input("Ingrese el nombre del repositorio: ")
+                    rep = input('Ingrese el nombre del repositorio: ')
                     rep_indice = buscar_repositorio(v, rep)
                     if rep_indice != -1:
-                        print("\nRepositorio encontrado!!!\n", v[rep_indice], "\nACTUALIZAR DATOS\n")
+                        print('\nRepositorio encontrado!!!\n', v[rep_indice], '\nACTUALIZAR DATOS\n')
                         actualizar_campos(v, rep_indice)
-                        print("\nProyecto actualizado!")
+                        print('\nProyecto actualizado!')
                         print(v[rep_indice])
                     else:
-                        input("El repositorio no existe. " + press)
+                        input('El repositorio no existe. ' + press)
 
                 elif op == 6:
                     crear_vector_popular(v_popular, matriz, meses)
                     grabar_binario(v_popular)
-                    print("Se ha grabado ")
+                    print('Se ha grabado ')
                 else:
                     v_archivo = leer_binario()
                     matriz_bin = recrear_matriz_popular(v_archivo, meses)
                     mostrar_matriz(matriz_bin, meses)
         elif vuelta > 1:
-            input("El valor no corresponde a una opcion valida. " + press)
+            input('El valor no corresponde a una opcion valida. ' + press)
 
         mostrar_menu()
         op = int(input('Ingrese opcion: '))
 
-    print("Cerrando...")
+    print('Cerrando...')
 
 
 if __name__ == '__main__':

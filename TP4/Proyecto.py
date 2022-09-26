@@ -17,3 +17,4 @@ class Proyecto:
         cadena += 'tags: ' + ','.join(self.tags) + "\n"
         cadena += 'url: ' + self.url + "\n"
         return cadena
+
