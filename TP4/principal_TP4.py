@@ -17,6 +17,20 @@ def mostrar_menu():
           '8) Salir del Programa\n')
 
 
+def busqueda_binaria_repositorio(v, repo):
+    n = len(v)
+    izq, der = 0, n-1
+    while izq <= der:
+        c = (izq + der) // 2
+        if v[c].repositorio == repo:
+            return c
+        if repo < v[c].repositorio:
+            der = c - 1
+        else:
+            izq = c + 1
+    return -1
+
+
 def add_in_order(vec, proyecto):
     n = len(vec)
     pos = n
@@ -36,15 +50,17 @@ def add_in_order(vec, proyecto):
 
 
 def filtrar_linea(v, campos):
+    # Solo dara false si el repositorio no puede agregarse al vector.
     res = True
     if campos[4] == '':
         res = False
 
-    # Si el campo lenguaje no viene vacio, verificar si el proyecto ya existe en el vector a traves del URL.
+    # Si el campo lenguaje no viene vacio, verificar si el proyecto ya existe en el vector a traves del
+    # campo repositorio, y como el vector siempre esta ordenado por ese campo lo buscamos con busqueda binaria.
     if res:
-        for i in v:
-            if campos[7] == i.url:
-                res = False
+        i = busqueda_binaria_repositorio(v, campos[1])
+        if i != -1:
+            res = False
     return res
 
 
@@ -113,7 +129,7 @@ def filtrado_x_tag(v, tag):
 def mostrar_x_tags(v_tags, tag):
     print('\nListando proyectos con la etiqueta', tag, '\n')
     print('{:<20}'.format('Nombre de usuario ') +
-          '{:<25}'.format('Fecha de actualiacion ') +
+          '{:<25}'.format('Fecha de actualizacion ') +
           '{:<15}'.format('Estrellas '))
     for i in v_tags:
         stars = determinar_estrellas(i.likes)
@@ -123,9 +139,10 @@ def mostrar_x_tags(v_tags, tag):
         print(proyecto)
 
 
-def grabar_registros(v, path_name='proyectos_filtrados.csv'):
+def grabar_registros(v, tag):
+    path_name = 'proyectos_filtrados_' + tag + '.csv'
     m = open(path_name, 'wt')
-    m.write('nombre_usuario|repositorio|descripcion|fecha_actualizacion|lenguaje|estrellas|tags|url\n')
+    m.write('nombre_usuario|repositorio|fecha_actualizacion|lenguaje|estrellas|tags|url\n')
     for i in v:
         m.write(i.nombre_usuario + '|' +
                 i.repositorio + '|' +
@@ -183,7 +200,8 @@ def determinar_mes(fecha):
     return mes
 
 
-def crear_martiz(v, matriz):
+def crear_martiz(v):
+    matriz = []
     for i in range(12):
         matriz.append([0] * 5)
 
@@ -191,6 +209,7 @@ def crear_martiz(v, matriz):
         stars = determinar_estrellas(i.likes) - 1
         mes = determinar_mes(i.fecha_actualizacion) - 1
         matriz[mes][stars] += 1
+    return matriz
 
 
 def obtener_num_mes(mes, meses):
@@ -206,9 +225,9 @@ def recrear_matriz_popular(v, meses):
     for i in range(12):
         matriz.append([0] * 5)
     for i in v:
-        stars = determinar_estrellas(i.likes) - 1
+        stars = i.estrellas - 1
         mes = obtener_num_mes(i.mes, meses)
-        matriz[mes][stars] += 1
+        matriz[mes][stars] = i.cant_proyectos
     return matriz
 
 
@@ -254,7 +273,7 @@ def validar_mes(meses):
 def validar_si_no(mensaje):
     n = int(input(mensaje + '(ESCRIBAR EL VALOR NUMERICO):' + '\n1:SI\n2:NO\n'))
     while 1 > n or n > 2:
-        n = int(input(mensaje + '\n1:SI\n2:No\n'))
+        n = int(input(mensaje + '(ESCRIBAR EL VALOR NUMERICO):' + '\n1:SI\n2:No\n'))
     return n
 
 
@@ -283,8 +302,10 @@ def obtener_fecha():
 
 
 def actualizar_campos(v, indice):
-    user_name = input('Ingresa el nombre de usuario en github')
-    repo = input('Ingresa el nombre del repositorio')
+    user_name = input('Ingresa el nombre de usuario en github: ')
+    repo = input('Ingresa el nombre del repositorio: ')
+    v[indice].nombre_usuario = user_name
+    v[indice].repositorio = repo
     v[indice].url = 'http://github.com/' + user_name + '/' + repo
     v[indice].fecha_actualizacion = obtener_fecha()
 
@@ -336,8 +357,7 @@ def principal():
         if op == 1:
             datos = cargar_archivo(v)
             if datos[0] == 0 and datos[1] == 0:
-                print('La ruta del archivo no se encontro')
-                input(press)
+                input('El archivo no existe!!! ' + press)
             else:
                 print('Se cargaron', datos[0], 'registros exitosamente, y', datos[1], 'fueron omitidos.')
                 input(press)
@@ -353,7 +373,7 @@ def principal():
                         mostrar_x_tags(v_tags, tag)
                         res = validar_si_no('\nQuiere almacenar la lista en un archivo?')
                         if res == 1:
-                            grabar_registros(v_tags)
+                            grabar_registros(v_tags, tag)
                             input('Se grabaron ' + str(len(v_tags)) + ' registros. ' + press)
                     else:
                         input('Ningun proyecto tiene la etiqueta #' + tag + '. ' + press)
@@ -364,7 +384,7 @@ def principal():
                     input('\n' + press)
 
                 elif op == 4:
-                    crear_martiz(v, matriz)
+                    matriz = crear_martiz(v)
                     mostrar_matriz(matriz, meses)
                     n = validar_si_no('\nDesea ver el total de proyectos actualizados en algun mes?')
                     if n == 1:
@@ -373,24 +393,31 @@ def principal():
                         print('El mes de', meses[mes-1], 'tiene un total de', total, 'proyectos actualizados.')
 
                 elif op == 5:
+                    # Usamos busqueda binaria porque el vector esta ordenado por repositorio
                     rep = input('Ingrese el nombre del repositorio: ')
-                    rep_indice = buscar_repositorio(v, rep)
+                    rep_indice = busqueda_binaria_repositorio(v, rep)
                     if rep_indice != -1:
                         print('\nRepositorio encontrado!!!\n', v[rep_indice], '\nACTUALIZAR DATOS\n')
                         actualizar_campos(v, rep_indice)
                         print('\nProyecto actualizado!')
                         print(v[rep_indice])
                     else:
-                        input('El repositorio no existe. ' + press)
+                        input('El repositorio ' + rep + ' no existe. ' + press)
 
                 elif op == 6:
-                    crear_vector_popular(v_popular, matriz, meses)
-                    grabar_binario(v_popular)
-                    print('Se ha grabado ')
+                    if len(matriz) > 0:
+                        crear_vector_popular(v_popular, matriz, meses)
+                        grabar_binario(v_popular)
+                        print('Se ha grabado el archivo')
+                    else:
+                        input('Primero debe generar la matriz en la opcion N°4. del menu. ' + press)
                 else:
                     v_archivo = leer_binario()
-                    matriz_bin = recrear_matriz_popular(v_archivo, meses)
-                    mostrar_matriz(matriz_bin, meses)
+                    if len(v_archivo) > 0:
+                        matriz_bin = recrear_matriz_popular(v_archivo, meses)
+                        mostrar_matriz(matriz_bin, meses)
+                    else:
+                        input('El archivo no existe, puede crearlo en la opcion N°6 del menu. ' + press)
         elif vuelta > 1:
             input('El valor no corresponde a una opcion valida. ' + press)
 
