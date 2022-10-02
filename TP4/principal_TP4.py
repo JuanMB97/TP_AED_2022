@@ -304,8 +304,8 @@ def actualizar_campos(v, indice):
     v[indice].fecha_actualizacion = obtener_fecha()
 
 
-def grabar_binario(v, path_name='registros_populares.utn'):
-    m = open(path_name, 'a+b')
+def grabar_binario(v, path_name='registros_populares.dat'):
+    m = open(path_name, 'wb')
     for i in v:
         pickle.dump(i, m)
     m.close()
