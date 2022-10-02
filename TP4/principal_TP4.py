@@ -6,7 +6,8 @@ from Popular import *
 
 
 def mostrar_menu():
-    print('\n=== MENÚ ===\n'
+    equals = '='
+    print('\n' + equals * 25 + ' Gestión de Proyectos [v2.0]' + equals * 25 + '\n'
           '1) Cargar proyectos\n'
           '2) Mostrar proyectos que contengan cierta etiqueta (TAG)\n'
           '3) Determinar cantidad de proyectos por enguajes y listarlos de mayor a menor\n'
@@ -19,7 +20,7 @@ def mostrar_menu():
 
 def busqueda_binaria_repositorio(v, repo):
     n = len(v)
-    izq, der = 0, n-1
+    izq, der = 0, n - 1
     while izq <= der:
         c = (izq + der) // 2
         if v[c].repositorio == repo:
@@ -79,7 +80,7 @@ def cargar_archivo(v, path_file='proyectos.csv'):
             if linea[-1] == '\n':
                 linea = linea[:-1]
             campos = linea.split('|')
-            
+
             if filtrar_linea(v, campos):
                 datos[0] += 1
                 nombre_usuario = campos[0]
@@ -89,7 +90,7 @@ def cargar_archivo(v, path_file='proyectos.csv'):
                 likes = float(campos[5][:-1])
                 tags = campos[6].split(',')
                 url = campos[7]
-    
+
                 proyecto = Proyecto(nombre_usuario, repositorio, fecha_actualizacion, lenguaje, likes, tags, url)
                 add_in_order(v, proyecto)
             else:
@@ -180,8 +181,8 @@ def determinar_lenguajes(v):
 def ordenar_x_lenguaje(v_leng, v_acum):
     n = len(v_leng)
 
-    for i in range(n-1):
-        for j in range(i+1, n):
+    for i in range(n - 1):
+        for j in range(i + 1, n):
             if v_acum[j] > v_acum[i]:
                 v_acum[i], v_acum[j] = v_acum[j], v_acum[i]
                 v_leng[i], v_leng[j] = v_leng[j], v_leng[i]
@@ -189,10 +190,15 @@ def ordenar_x_lenguaje(v_leng, v_acum):
 
 def mostrar_lenguajes_cantidad(v_leng, v_acum):
     n = len(v_leng)
+    asterisco = '* '
     print('\nListando cantidad de proyectos por lenguaje\n')
-    print('{:<20}'.format('Lenguaje') + 'Cantidad de proyectos')
+    print(asterisco * 24)
+    print('{:<20}'.format('* LENGUAJE') + '* CANTIDAD DE PROYECTOS  *')
+    print(asterisco * 24)
     for i in range(n):
-        print('{:<20}'.format(v_leng[i]) + str(v_acum[i]))
+        print('{:<20}'.format('* ' + v_leng[i]) + '* ', end='')
+        print('{:>24}'.format(str(v_acum[i]) + ' ' * 11), end='*\n')
+        print(asterisco * 24)
 
 
 def determinar_mes(fecha):
@@ -235,7 +241,7 @@ def mostrar_matriz(matriz, meses):
     fila = len(matriz)
     columna = len(matriz[0])
     star = '★'
-    header = 'POPULARIDAD'
+    header = '\nPOPULARIDAD'
 
     for i in range(5):
         header += '{:>10}'.format(star * (i + 1))
@@ -261,7 +267,7 @@ def calcular_total_actualizados_mes(v, mes):
 def validar_mes(meses):
     msj = '\nVALOR MES\n'
     for i in range(12):
-        msj += str(i+1) + ': ' + meses[i] + '\n'
+        msj += str(i + 1) + ': ' + meses[i] + '\n'
     print(msj)
 
     mes = int(input('Ingrese el VALOR del mes que desea ver: '))
@@ -275,17 +281,6 @@ def validar_si_no(mensaje):
     while 1 > n or n > 2:
         n = int(input(mensaje + '(ESCRIBAR EL VALOR NUMERICO):' + '\n1:SI\n2:No\n'))
     return n
-
-
-def buscar_repositorio(v, rep):
-    n = len(v)
-    indice = -1
-
-    for i in range(n):
-        if v[i].repositorio == rep:
-            indice = i
-            break
-    return indice
 
 
 def obtener_fecha():
@@ -390,7 +385,7 @@ def principal():
                     if n == 1:
                         mes = validar_mes(meses)
                         total = calcular_total_actualizados_mes(v, mes)
-                        print('El mes de', meses[mes-1], 'tiene un total de', total, 'proyectos actualizados.')
+                        print('El mes de', meses[mes - 1], 'tiene un total de', total, 'proyectos actualizados.')
 
                 elif op == 5:
                     # Usamos busqueda binaria porque el vector esta ordenado por repositorio
@@ -408,7 +403,7 @@ def principal():
                     if len(matriz) > 0:
                         crear_vector_popular(v_popular, matriz, meses)
                         grabar_binario(v_popular)
-                        print('Se ha grabado el archivo')
+                        input('Se ha grabado el archivo. ' + press)
                     else:
                         input('Primero debe generar la matriz en la opcion N°4. del menu. ' + press)
                 else:
