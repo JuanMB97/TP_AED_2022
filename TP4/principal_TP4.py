@@ -237,7 +237,7 @@ def recrear_matriz_popular(v, meses):
     return matriz
 
 
-def mostrar_matriz(matriz, meses):
+def mostrar_matriz_gg(matriz, meses):
     fila = len(matriz)
     columna = len(matriz[0])
     star = '★'
@@ -252,6 +252,22 @@ def mostrar_matriz(matriz, meses):
         for j in range(columna):
             print('{:<10}'.format(matriz[i][j]), end=' ')
         print('\n')
+
+
+def mostrar_matriz(matriz, meses):
+    fila = len(matriz)
+    columna = len(matriz[0])
+    sep = '* '
+
+    print(sep * 41)
+    print("* Popularidad       *     ★     *    ★★    *    ★★★   *   ★★★★  *  ★★★★★  *")
+    print(sep * 41)
+    for i in range(fila):
+        print('{:<20}'.format(sep + meses[i]), end='* ')
+        for j in range(columna):
+            print('{:<10}'.format((' ' * 4) + str(matriz[i][j])), end='* ')
+        print('')
+        print(sep * 41)
 
 
 def calcular_total_actualizados_mes(v, mes):
