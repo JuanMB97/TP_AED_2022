@@ -416,7 +416,7 @@ def principal():
             input('El valor no corresponde a una opcion valida. ' + press)
 
         mostrar_menu()
-        op = int(input('Ingrese opcion: '))
+        op = int(input('Ingrese opcion por favor: '))
 
     print('Cerrando...')
 
