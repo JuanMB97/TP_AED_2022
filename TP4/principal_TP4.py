@@ -324,7 +324,7 @@ def crear_vector_popular(vec, matriz, meses):
                 # print(reg)
 
 
-def leer_binario(path_file='registros_populares.utn'):
+def leer_binario(path_file='registros_populares.dat'):
     v = []
     if os.path.exists(path_file):
         m = open(path_file, 'rb')
