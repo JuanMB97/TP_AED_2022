@@ -1,22 +1,56 @@
-Una empresa de desarrollo de software de nuestra ciudad nos encarga un sistema para la gestión de Proyectos de Software. De cada proyecto se conoce:
+Para el presente práctico se deben procesar los datos de Series de Televisión disponibles en una plaforma de streaming.
 
-Número de proyecto
-Título
-Fecha de actualización con el formato dd-mm-yyyy validando que el año esté entre 2000 y 2022
-Lenguaje (siendo 0:Python, 1:Java, 2:C++, 3:Javascript, 4:Shell, 5:HTML, 6:Ruby, 7:Swift, 8: C#, 9:VB, 10:Go)
-Cantidad de líneas de código
-Se pide desarrollar un programa en dos módulos: uno de ellos debe contener la definición de la clase del regisstro y las funciones básicas que permitan manejar un registro, y el otro debe contener el programa principal, que debe estar controlado por un menú de opciones para permitir hacer lo siguiente:
+En primer lugar se cuenta con el archivo generos.txt en el que aparecen los géneros o temáticas de cada serie a razón de un género por línea. 
 
-1) Cargar proyectos: La generación de n proyectos de software cargados en un arreglo de registros. Para ello se pueden generar los datos totalmente aleatorios o bien contar con proyectos completos precargados e ir seleccionando aleatoriamente entre los mismos. Cada vez que selecciona esta opción durante la ejecución se agregarán datos al arreglo, sin eliminar los que ya estaban cargados. El número del proyecto no debe repetirse dentro del arreglo.
+Y también se cuenta con el archivo series_aed.csv que es un archivo separado por pipes ("|") en el que se cuenta con una primera línea de cabecera y luego los datos con las siguientes columnas:
 
-2) Listar proyectos: Mostrar todos los proyectos contenidos en el arreglo, pero ordenados alfabéticamente por título. Cada proyecto debe ocupar un máximo de dos líneas en pantalla y en lugar de mostrarse el identificador del lenguaje se debe mostrar su nombre.
+Poster_Link: link del poster de la serie en Amazon.
+Series_Title: Título de la serie.
+Runtime_of_Series: año desde - año hasta de la serie (puede estar en blanco el año desde).
+Certificate: Categoría de la serie, puede estar en blanco.
+Runtime_of_Episodes: tiempo promedio de los capítulos. Es un número seguido por la palabra "min".
+Genre: Género de la serie.
+IMDB_Rating: Es el rating que va de 1 a 9,7
+Overwiew: Es un resumen de la serie.
+Star1, Star2, Star3 y Star4: Son los actores y actrices de la serie.
+No_of_Vote: La cantidad de votos recibida.
+Se pide:
 
-3) Actualizar proyecto: Buscar si existe un proyecto con número x, siendo x un valor que se ingrese por teclado. Si existe, se debe permitir modificar su cantidad de líneas de código y la fecha de actualización (recuerde que debe cumplir con el formato dd-mm-yyyy). Si no existe, debe indicar con un mensaje.
+1) Procesar el archivo de texto generos.txt para crear un vector que contenga los nombres de los mismos (Únicamente los nombres y en el mismo orden en el que se encuentran en el archivo).
 
-4) Resumen por lenguaje: Calcular la cantidad de líneas de código acumuladas por lenguaje. Mostrar los resultados teniendo en cuenta que se debe visualizar el nombre del lenguaje en lugar del código. 
+2) Procesar el archivo de texto series.csv para generar un vector de registros de series con el siguiente formato:
 
-5) Resumen por año:  Calcular la cantidad de proyectos por año de actualización, considerando los años entre 2000 y 2022 inlcuidos ambos. Mostrar los resultados sólo de los años que tengan algún proyecto de software.
+Poster_Link: link del poster de la serie en Amazon.
+Series_Title: Título de la serie
+Runtime_of_Series: año desde - año hasta de la serie, puede estar en blanco el año desde.
+Certificate: Categoría de la serie, puede estar en blanco.
+Runtime_of_Episodes: tiempo promedio de los capítulos.
+Genre: Género de la serie
+IMDB_Rating: Es el rating que va de 1 a 9,7
+Overwiew: Es un resumen de la serie.
+Star1, Star2, Star3 y Star4: NO LEVANTAR DEL ARCHIVO.
+No_of_Vote: La cantidad de votos recibida.
+Cumpliendo con las siguientes reglas:
 
-6) Filtrar lenguaje: Mostrar los proyectos de software ordenados por número de proyecto de manera ascendente, del lenguaje ln, siendo ln un valor ingresado por teclado.
+a) En el vector, los registros de series deben quedar ordenados a medida que se agregan elementos, por el número de votos obtenidos, de mayor a menor.
 
-7) Productividad: A partir del resultado obtenido en el punto 5, determinar el año con mayor cantidad de proyectos actualizados, considerando mostrar todos los años si fuera más de uno con dicha cantidad.
+b) No deben registrarse en el vector aquellas series que carezcan de duración, es decir que tengan el campo Runtime_of_Episodes en blanco.
+
+c) Esa duración debe almacenarse como valor numérico entero, sin el "min" que aparece al final de cada una.
+
+d) En lugar de guardar en el campo Genre la cadena que viene del archivo, se debe almacenar el código de ese género, que estaría representado por la posición o índice de ese género en el vector creado en el punto 1.
+
+3) A partir del vector de series, mostrar aquellas series (a razón de una o dos líneas por cada una de ellas), que tengan una duración en minutos entre a y b siendo a y b valores que se deben ingresar por teclado. Al final del listado mostrar la duración promedio y ofrecer al usuario almacenar el listado en un nuevo archivo de texto con el formato del original, sin los campos omitidos.
+
+4) Generar un vector de conteo en el que se pueda determinar la cantidad de series por cada uno de los géneros posibles, haciendo uso del vector de registros de series y del vector de géneros del punto 1. Mostrar los resultados visualizando el nombre del género en lugar del código representado.
+
+5) Generar a partir del vector de conteo un archivo binario en el que se almacenen registros que contengan:
+
+Número del género
+Nombre del género
+Cantidad
+6) Mostrar el archivo generado en el punto 5.
+
+7) Buscar si en el vector de series se encuentra una serie con el campo Series_Title igual a tit, siendo tit un valor que se carga por teclado. Si se encuentra incrementar su número de votos en uno. Si no se encuentra mostrar un mensaje.
+
+ 
