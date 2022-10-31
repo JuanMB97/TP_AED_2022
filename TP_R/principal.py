@@ -53,7 +53,7 @@ def leer_csv(v_txt, v_csv, archivo):
                 genre = campo[5]
                 rating = campo[6]
                 resumen = campo[7]
-                votes = campo[12]
+                votes = int(campo[12])
                 registro = Series(link, title, date, certificate, time, genre, rating, resumen, votes)
                 if filtrar_registro(registro):
                     registro.runtime_of_episodes = int(registro.runtime_of_episodes[:-4])
@@ -175,7 +175,7 @@ def buscar_titulo(v, tit):
     # La busqueda binaria no sirve, ya que el arreglo fue ordenado por otro atributo.
     indice = -1
     for i in range(len(v)):
-        if v[i].title == tit:
+        if v[i].series_title == tit:
             indice = i
             break
     return indice
@@ -225,9 +225,11 @@ def principal():
 
                 elif op == 4:
                     v_conteo = mostrar_por_genero(v_csv, v_txt)
+                    input(press)
                 elif op == 5:
                     if v_conteo is not None:
                         grabar_binario(v_conteo, v_txt)
+                        input('El archivo binario fue creado con exito!. ' + press)
                     else:
                         input('Primero debe generar el vector de conteo en el punto 4!. ' + press)
                 elif op == 6:
@@ -238,6 +240,7 @@ def principal():
                     indice = buscar_titulo(v_csv, tit)
                     if indice != -1:
                         v_csv[indice].not_of_vote += 1
+                        input('Los votos de la serie ' + tit + ' ha sido actualizada. ' + press)
                     else:
                         input('La serie con el titulo ' + tit + ' no se encuentra. ' + press)
 
