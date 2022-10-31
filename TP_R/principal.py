@@ -1,3 +1,14 @@
+"""
+Integrantes:
+    Legajo: 77643
+    Nombre: Barreto Juan
+    Curso: 1k15
+
+    Legajo: 79059
+    Nombre: Flores Principe Alejandro Hernan
+    Curso: 1k15
+"""
+
 import os.path
 import pickle
 
@@ -11,10 +22,10 @@ def mostrar_menu():
           '1) Procesar el archivo de texto generos.txt.\n'
           '2) Procesar el archivo de texto series.csv.\n'
           '3) Mostrar aquellas series que tengan una duracion entre A y B, estas ingresadas por teclado.\n'
-          '4) Crear un vector de conteo que determine la cantidad de series por genero.\n'
-          '5) Generar un binario en el que almacenen registros sobre las series.\n'
+          '4) Determine la cantidad de series por genero.\n'
+          '5) Generar un binario en el que almacenen registros sobre las series filtradas del punto 4.\n'
           '6) Mostrar el archivo generado en el punto 5.\n'
-          '7) Buscar en el vector de series si se encuentra una serie, ingresando el titulo por teclado.\n'
+          '7) Buscar una serie a traves de su titulo.\n'
           '8) Salir del Programa\n')
 
 
@@ -110,7 +121,7 @@ def mostrar_entre(v_csv, a, b):
     return v
 
 
-def validar_booleano(mensaje):
+def validar_opc(mensaje):
     res = input(mensaje)
     while res not in ("1", "2"):
         res = input("Respuesta invalida! " + mensaje)
@@ -190,8 +201,8 @@ def principal():
     v_conteo = None
     vuelta = 0
     press = 'Presione enter para continuar...'
-    generos = "generos.txt"
-    series = "series_aed.csv"
+    generos = 'generos.txt'
+    series = 'series_aed.csv'
 
     while op != 8:
         vuelta += 1
@@ -214,10 +225,10 @@ def principal():
                 input('Primero debe leer los archivos y cargarlos en memoria! (PUNTOS 1 Y 2). ' + press)
             else:
                 if op == 3:
-                    a = validar_duracion("Ingrese la duraccion minima (A): ")
-                    b = validar_duracion("Ingrese la duraccion maxima (B): ", a)
-                    save = validar_booleano("Desea guardar el resultado en otro archivo de texto?"
-                                            "(INGRESE EL VALOR) \n1: SI \n2: NO\n")
+                    a = validar_duracion('Ingrese la duraccion minima (A): ')
+                    b = validar_duracion('Ingrese la duraccion maxima (B): ', a)
+                    save = validar_opc('Desea guardar el resultado en otro archivo de texto?'
+                                       '(INGRESE EL VALOR) \n1: SI \n2: NO\n')
                     if save == 1:
                         v_duracion = mostrar_entre(v_csv, a, b)
                         grabar_csv(v_duracion, v_txt)
@@ -237,15 +248,21 @@ def principal():
                         input('Primero debe generar el vector de conteo en el punto 4!. ' + press)
                 elif op == 6:
                     v = leer_binario()
-                    mostrar_vector(v)
+                    if len(v) != 0:
+                        mostrar_vector(v)
+                        input('\n' + press)
+                    else:
+                        input('El archivo no pudo ser leido o no tiene informacion.')
                 else:
                     tit = input('Ingrese el titulo de la serie que desea buscar: ')
                     indice = buscar_titulo(v_csv, tit)
                     if indice != -1:
                         v_csv[indice].not_of_vote += 1
-                        input('Los votos de la serie ' + tit + ' ha sido actualizada. ' + press)
+                        print(v_csv[indice])
+                        input('Los votos de la serie "' + tit + '" ha sido actualizada. ' + press)
+
                     else:
-                        input('La serie con el titulo ' + tit + ' no se encuentra. ' + press)
+                        input('La serie con el titulo "' + tit + '" no se encuentra. ' + press)
 
         elif vuelta > 1:
             input('El valor no corresponde a una opcion valida. ' + press)
