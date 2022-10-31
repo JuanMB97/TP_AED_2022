@@ -88,8 +88,10 @@ def add_in_order(vec, registro):
     vec[pos:pos] = [registro]
 
 
-def validar_duracion(mensaje):
+def validar_duracion(mensaje, duracion=0):
     valor = int(input(mensaje))
+    while valor <= duracion:
+        valor = int(input('Este limite debe ser mayor a ' + str(duracion) + '. ' + mensaje))
     return valor
 
 
@@ -128,7 +130,7 @@ def grabar_csv(v_duracion, v_txt, file_name='punto3_archivo.csv'):
         cadena += v_txt[i.genre] + '|'
         cadena += i.IMDB_rating + '|'
         cadena += i.overwiew + '|'
-        cadena += i.not_of_vote + '\n'
+        cadena += str(i.not_of_vote) + '\n'
         m.write(cadena)
     m.close()
 
@@ -213,7 +215,7 @@ def principal():
             else:
                 if op == 3:
                     a = validar_duracion("Ingrese la duraccion minima (A): ")
-                    b = validar_duracion("Ingrese la duraccion maxima (B): ")
+                    b = validar_duracion("Ingrese la duraccion maxima (B): ", a)
                     save = validar_booleano("Desea guardar el resultado en otro archivo de texto?"
                                             "(INGRESE EL VALOR) \n1: SI \n2: NO\n")
                     if save == 1:
@@ -222,6 +224,7 @@ def principal():
 
                     else:
                         mostrar_entre(v_csv, a, b)
+                    input(press)
 
                 elif op == 4:
                     v_conteo = mostrar_por_genero(v_csv, v_txt)

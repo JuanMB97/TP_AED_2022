@@ -19,5 +19,5 @@ class Series:
         cadena += '{:<15}'.format('\nGenre: ' + str(self.genre))
         cadena += '{:<15}'.format('\nRating: ' + self.IMDB_rating)
         cadena += '{:<30}'.format('\nOverwiew: ' + self.overwiew)
-        cadena += '{:<10}'.format('\nVotes: ' + self.not_of_vote + "\n")
+        cadena += '{:<10}'.format('\nVotes: ' + str(self.not_of_vote) + "\n")
         return cadena
