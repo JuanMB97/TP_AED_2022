@@ -1,17 +1,20 @@
 import os.path
+import pickle
+
 from registro import *
+from registro_reducido import *
 
 
 def mostrar_menu():
     equals = '='
     print('\n' + equals * 25 + ' Gestión de Proyectos [v2.0]' + equals * 25 + '\n'
-          '1) Cargar proyectos\n'
-          '2) Mostrar proyectos que contengan cierta etiqueta (TAG)\n'
-          '3) Determinar cantidad de proyectos por enguajes y listarlos de mayor a menor\n'
-          '4) Crear matriz de popularidad\n'
-          '5) Buscar proyecto para actualizar fecha y url.\n'
-          '6) Guardar en disco un archivo con los datos de la matriz generada en el punto 4.\n'
-          '7) Mostrar la matriz del archivo grabado en el punto 6.\n'
+          '1) Procesar el archivo de texto generos.txt.\n'
+          '2) Procesar el archivo de texto series.csv.\n'
+          '3) Mostrar aquellas series que tengan una duracion entre A y B, estas ingresadas por teclado.\n'
+          '4) Crear un vector de conteo que determine la cantidad de series por genero.\n'
+          '5) Generar un binario en el que almacenen registros sobre las series.\n'
+          '6) Mostrar el archivo generado en el punto 5.\n'
+          '7) Buscar en el vector de series si se encuentra una serie, ingresando el titulo por teclado.\n'
           '8) Salir del Programa\n')
 
 
@@ -53,7 +56,7 @@ def leer_csv(v_txt, v_csv, archivo):
                 votes = campo[12]
                 registro = Series(link, title, date, certificate, time, genre, rating, resumen, votes)
                 if filtrar_registro(registro):
-                    registro.runtime_of_episodes = registro.runtime_of_episodes[:-4]
+                    registro.runtime_of_episodes = int(registro.runtime_of_episodes[:-4])
                     registro.genre = obtener_indice_genero(v_txt, registro.genre)
                     add_in_order(v_csv, registro)
         m.close()
@@ -85,10 +88,94 @@ def add_in_order(vec, registro):
     vec[pos:pos] = [registro]
 
 
+def validar_duracion(mensaje):
+    valor = int(input(mensaje))
+    return valor
+
+
+def mostrar_entre(v_csv, a, b):
+    cont = 0
+    acum = 0
+    v = []
+    for i in v_csv:
+        if a <= i.runtime_of_episodes <= b:
+            cont += 1
+            acum += i.runtime_of_episodes
+            v.append(i)
+            print(i)
+    prom = acum // cont
+    print('El tiempo promedio de duracion de todas las series es de ' + str(prom) + 'min.\n')
+    return v
+
+
+def validar_booleano(mensaje):
+    res = input(mensaje)
+    while res not in ("1", "2"):
+        res = input("Respuesta invalida! " + mensaje)
+    return int(res)
+
+
+def grabar_txt(v_duracion, file_name='punto3_archivo.txt'):
+    m = open(file_name, 'wt')
+    for i in v_duracion:
+        m.write(i)
+    m.close()
+
+
+def mostrar_por_genero(v_csv, v_txt):
+    n = len(v_txt)
+    v_conteo = [0] * n
+    for i in v_csv:
+        indice = i.genre
+        v_conteo[indice] += 1
+
+    for i in range(n):
+        print('Del genero', v_txt[i], 'hay', v_conteo[i], 'series.')
+
+    return v_conteo
+
+
+def grabar_binario(v, v_txt, file_name='punto4_archivo.utn'):
+    m = open(file_name, 'wt')
+    for i in range(len(v_txt)):
+        nom_genero = v_txt[i]
+        registro = SeriesReducido(i, nom_genero, v[i])
+        pickle.dump(registro, m)
+    m.close()
+
+
+def leer_binario(path_file='punto4_archivo.utn'):
+    v = []
+    if os.path.exists(path_file):
+        m = open(path_file, 'rb')
+        pos = os.path.getsize(path_file)
+        while m.tell() < pos:
+            registro = pickle.load(m)
+            v.append(registro)
+        m.close()
+    return v
+
+
+def mostrar_vector(v):
+    for i in v:
+        print(i)
+
+
+def buscar_titulo(v, tit):
+    # La busqueda binaria no sirve, ya que el arreglo fue ordenado por otro atributo.
+    indice = -1
+    for i in range(len(v)):
+        if v[i].title == tit:
+            indice = i
+            break
+    return indice
+
+
 def principal():
     op = -1
     v_txt = []
     v_csv = []
+    v_conteo = None
     vuelta = 0
     press = 'Presione enter para continuar...'
     generos = "generos.txt"
@@ -102,26 +189,46 @@ def principal():
                 input('El archivo TXT se leyo con exito!. ' + press)
             else:
                 input('ERROR: El archivo TXT no pudo ser leido o está vacio. ' + press)
+
         elif op == 2 and len(v_txt) != 0:
             leer_csv(v_txt, v_csv, series)
             if len(v_txt) != 0:
                 input('El archivo CSV se leyo con exito!. ' + press)
             else:
                 input('ERROR: El archivo CSV no pudo ser leido o está vacio. ' + press)
+
         elif 2 < op < 8:
             if len(v_csv) == 0:
                 input('Primero debe leer los archivos y cargarlos en memoria! (PUNTOS 1 Y 2). ' + press)
             else:
                 if op == 3:
-                    pass
+                    a = validar_duracion("Ingrese la duraccion inferior (A): ")
+                    b = validar_duracion("Ingrese la duraccion inferior (A): ")
+                    save = validar_booleano("Desea guardar el resultado en otro archivo de texto? \n1: SI \n2: NO")
+                    if save == 1:
+                        v_duracion = mostrar_entre(v_csv, a, b)
+                        grabar_txt(v_duracion)
+                    else:
+                        mostrar_entre(v_csv, a, b)
+
                 elif op == 4:
-                    pass
+                    v_conteo = mostrar_por_genero(v_csv, v_txt)
                 elif op == 5:
-                    pass
+                    if v_conteo is not None:
+                        grabar_binario(v_conteo, v_txt)
+                    else:
+                        input('Primero debe generar el vector de conteo en el punto 4!. ' + press)
                 elif op == 6:
-                    pass
+                    v = leer_binario()
+                    mostrar_vector(v)
                 else:
-                    pass
+                    tit = input('Ingrese el titulo de la serie que desea buscar: ')
+                    indice = buscar_titulo(v_csv, tit)
+                    if indice != -1:
+                        v_csv[indice].not_of_vote += 1
+                    else:
+                        input('La serie con el titulo ' + tit + ' no se encuentra. ' + press)
+
         elif vuelta > 1:
             input('El valor no corresponde a una opcion valida. ' + press)
 

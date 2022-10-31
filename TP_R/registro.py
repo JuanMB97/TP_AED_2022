@@ -11,13 +11,13 @@ class Series:
         self.not_of_vote = votos
 
     def __str__(self):
-        cadena = '{:<30}'.format('Link: ' + self.poster_link)
-        cadena += '{:<30}'.format('Title: ' + self.series_title)
-        cadena += '{:<30}'.format('Date: ' + self.runtime_of_series)
-        cadena += '{:<30}'.format('Certificate: ' + self.certificate)
-        cadena += '{:<30}'.format('Time: ' + self.runtime_of_episodes)
-        cadena += '{:<30}'.format('Genre: ' + self.genre)
-        cadena += '{:<30}'.format('Rating: ' + self.IMDB_rating)
-        cadena += '{:<30}'.format('Overwiew: ' + self.overwiew)
-        cadena += '{:<30}'.format('Votes: ' + self.not_of_vote)
-
+        cadena = '{:<80}'.format('Link: ' + self.poster_link)
+        cadena += '{:<30}'.format('\nTitle: ' + self.series_title)
+        cadena += '{:<15}'.format('\nDate: ' + self.runtime_of_series)
+        cadena += '{:<15}'.format('\nCertificate: ' + self.certificate)
+        cadena += '{:<15}'.format('\nTime: ' + str(self.runtime_of_episodes))
+        cadena += '{:<15}'.format('\nGenre: ' + str(self.genre))
+        cadena += '{:<15}'.format('\nRating: ' + self.IMDB_rating)
+        cadena += '{:<30}'.format('\nOverwiew: ' + self.overwiew)
+        cadena += '{:<10}'.format('\nVotes: ' + self.not_of_vote + "\n")
+        return cadena
