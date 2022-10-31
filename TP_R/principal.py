@@ -7,7 +7,7 @@ from registro_reducido import *
 
 def mostrar_menu():
     equals = '='
-    print('\n' + equals * 25 + ' Gestión de Proyectos [v2.0]' + equals * 25 + '\n'
+    print('\n' + equals * 25 + ' Sistema de Gestión de Series ' + equals * 25 + '\n'
           '1) Procesar el archivo de texto generos.txt.\n'
           '2) Procesar el archivo de texto series.csv.\n'
           '3) Mostrar aquellas series que tengan una duracion entre A y B, estas ingresadas por teclado.\n'
@@ -104,7 +104,7 @@ def mostrar_entre(v_csv, a, b):
             v.append(i)
             print(i)
     prom = acum // cont
-    print('El tiempo promedio de duracion de todas las series es de ' + str(prom) + 'min.\n')
+    print('El tiempo promedio de duracion de todas las series es de ' + str(prom) + ' min.\n')
     return v
 
 
@@ -115,28 +115,38 @@ def validar_booleano(mensaje):
     return int(res)
 
 
-def grabar_txt(v_duracion, file_name='punto3_archivo.txt'):
+def grabar_csv(v_duracion, v_txt, file_name='punto3_archivo.csv'):
     m = open(file_name, 'wt')
+    m.write('Poster_Link|Series_Title|Runtime_of_Series|Certificate|'
+            'Runtime_of_Episodes|Genre|IMDB_Rating|Overview|No_of_Votes\n')
     for i in v_duracion:
-        m.write(i)
+        cadena = i.poster_link + '|'
+        cadena += i.series_title + '|'
+        cadena += i.runtime_of_series + '|'
+        cadena += i.certificate + '|'
+        cadena += str(i.runtime_of_episodes) + ' min|'
+        cadena += v_txt[i.genre] + '|'
+        cadena += i.IMDB_rating + '|'
+        cadena += i.overwiew + '|'
+        cadena += i.not_of_vote + '\n'
+        m.write(cadena)
     m.close()
 
 
 def mostrar_por_genero(v_csv, v_txt):
-    n = len(v_txt)
-    v_conteo = [0] * n
+    v_conteo = [0] * len(v_txt)
     for i in v_csv:
         indice = i.genre
         v_conteo[indice] += 1
 
-    for i in range(n):
+    for i in range(len(v_txt)):
         print('Del genero', v_txt[i], 'hay', v_conteo[i], 'series.')
 
     return v_conteo
 
 
 def grabar_binario(v, v_txt, file_name='punto4_archivo.utn'):
-    m = open(file_name, 'wt')
+    m = open(file_name, 'wb')
     for i in range(len(v_txt)):
         nom_genero = v_txt[i]
         registro = SeriesReducido(i, nom_genero, v[i])
@@ -202,12 +212,14 @@ def principal():
                 input('Primero debe leer los archivos y cargarlos en memoria! (PUNTOS 1 Y 2). ' + press)
             else:
                 if op == 3:
-                    a = validar_duracion("Ingrese la duraccion inferior (A): ")
-                    b = validar_duracion("Ingrese la duraccion inferior (A): ")
-                    save = validar_booleano("Desea guardar el resultado en otro archivo de texto? \n1: SI \n2: NO")
+                    a = validar_duracion("Ingrese la duraccion minima (A): ")
+                    b = validar_duracion("Ingrese la duraccion maxima (B): ")
+                    save = validar_booleano("Desea guardar el resultado en otro archivo de texto?"
+                                            "(INGRESE EL VALOR) \n1: SI \n2: NO\n")
                     if save == 1:
                         v_duracion = mostrar_entre(v_csv, a, b)
-                        grabar_txt(v_duracion)
+                        grabar_csv(v_duracion, v_txt)
+
                     else:
                         mostrar_entre(v_csv, a, b)
 
